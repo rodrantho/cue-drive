@@ -6,15 +6,19 @@ on:
       - 'v*'
   workflow_dispatch:
 
+# Permisos necesarios para crear GitHub Releases
+permissions:
+  contents: write
+
 jobs:
   release:
     strategy:
       fail-fast: false
       matrix:
         include:
-          - platform: macos-13          # Intel macOS → .dmg x86_64
+          - platform: macos-latest
             target: x86_64-apple-darwin
-          - platform: windows-latest    # Windows → .exe + .msi x86_64
+          - platform: windows-latest
             target: x86_64-pc-windows-msvc
 
     runs-on: ${{ matrix.platform }}
@@ -31,7 +35,7 @@ jobs:
           python-version: '3.11'
 
       - name: Build analyzer binary (macOS)
-        if: matrix.platform == 'macos-13'
+        if: matrix.platform == 'macos-latest'
         run: |
           cd analyzer
           pip install --upgrade pip
@@ -83,12 +87,6 @@ jobs:
           workspaces: './src-tauri -> target'
 
       # ── 5. Build Tauri + publicar release ────────────────────────
-      #
-      #  tauri-action sube automáticamente al GitHub Release:
-      #    macOS  → CueDrive_x.x.x_x64.dmg
-      #    Windows → CueDrive_x.x.x_x64-setup.exe
-      #    +       → latest.json  (usado por el auto-updater interno)
-      #
       - name: Build and publish Tauri release
         uses: tauri-apps/tauri-action@v0
         env:
@@ -106,10 +104,10 @@ jobs:
             ### Descargas / Downloads
             | Sistema | Archivo |
             |---|---|
-            | macOS Intel (x64) | `CueDrive_*_x64.dmg` |
+            | macOS (x64) | `CueDrive_*_x64.dmg` |
             | Windows 10/11 (x64) | `CueDrive_*_x64-setup.exe` |
 
-            > **macOS:** si Gatekeeper bloquea la app → clic derecho → Abrir.
+            > **macOS:** si Gatekeeper bloquea → clic derecho → Abrir.
             > **Windows:** si SmartScreen avisa → "Más información" → Ejecutar de todos modos.
           releaseDraft: false
           prerelease: false
