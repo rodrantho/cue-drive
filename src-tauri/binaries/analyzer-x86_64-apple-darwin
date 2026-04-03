@@ -1,0 +1,3 @@
+#!/bin/bash
+# Development stub — replaced by PyInstaller binary for production
+/usr/bin/python3 "$(dirname "$0")/../../../analyzer/analyzer.py" "$@"
