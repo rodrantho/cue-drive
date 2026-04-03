@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Library, Wand2, Usb } from "lucide-react";
+import { Library, Wand2, Usb, Globe, Heart } from "lucide-react";
+import { openUrl } from "@tauri-apps/plugin-opener";
 import { LibraryView } from "./components/library/LibraryView";
 import { SetBuilderView } from "./components/setbuilder/SetBuilderView";
 import { ExportView } from "./components/export/ExportView";
@@ -22,6 +23,7 @@ export default function App() {
   const { language, setLanguage } = useLangStore();
   const [tab, setTab] = useState<Tab>("library");
   const { selectedTrackId, autoPlayId, tracks, selectTrack } = useLibraryStore();
+
   const selectedTrack = selectedTrackId ? tracks[selectedTrackId] : null;
 
   const TABS: { value: Tab; icon: typeof Library; label: string }[] = [
@@ -57,23 +59,55 @@ export default function App() {
           </button>
         ))}
 
-        {/* Language selector — bottom of sidebar */}
-        <div className="mt-auto flex flex-col gap-1">
-          {LANG_OPTIONS.map((lang) => (
-            <button
-              key={lang.value}
-              onClick={() => setLanguage(lang.value)}
-              title={lang.value === "es" ? "Español" : "English"}
-              className={cn(
-                "w-10 h-7 rounded-lg text-xs font-bold transition-all",
-                language === lang.value
-                  ? "bg-[var(--color-accent)]/20 text-[var(--color-accent)]"
-                  : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
-              )}
-            >
-              {lang.flag}
-            </button>
-          ))}
+        {/* Bottom sidebar: web, donate, language, signature */}
+        <div className="mt-auto flex flex-col items-center gap-2">
+
+          {/* Website */}
+          <button
+            onClick={() => openUrl("https://cuedrive.rodrantho.com")}
+            title="cuedrive.rodrantho.com"
+            className="w-10 h-10 rounded-xl flex items-center justify-center text-[var(--color-text-muted)] hover:bg-[var(--color-surface-2)] hover:text-[var(--color-accent)] transition-all"
+          >
+            <Globe className="w-4 h-4" />
+          </button>
+
+          {/* Donate */}
+          <button
+            onClick={() => openUrl("https://www.paypal.com/donate/?business=rodrantho%40outlook.com&currency_code=USD")}
+            title="Support CueDrive ♥"
+            className="w-10 h-10 rounded-xl flex items-center justify-center text-[var(--color-text-muted)] hover:bg-red-500/10 hover:text-red-400 transition-all"
+          >
+            <Heart className="w-4 h-4" />
+          </button>
+
+          {/* Language selector */}
+          <div className="flex flex-col gap-1 pt-1 border-t border-[var(--color-border)] w-10">
+            {LANG_OPTIONS.map((lang) => (
+              <button
+                key={lang.value}
+                onClick={() => setLanguage(lang.value)}
+                title={lang.value === "es" ? "Español" : "English"}
+                className={cn(
+                  "w-10 h-7 rounded-lg text-xs font-bold transition-all",
+                  language === lang.value
+                    ? "bg-[var(--color-accent)]/20 text-[var(--color-accent)]"
+                    : "text-[var(--color-text-muted)] hover:text-[var(--color-text)]"
+                )}
+              >
+                {lang.flag}
+              </button>
+            ))}
+          </div>
+
+          {/* Signature */}
+          <div
+            title="@rodrantho"
+            className="w-10 h-8 flex items-center justify-center"
+          >
+            <span className="text-[9px] font-mono text-[var(--color-text-muted)] opacity-40 leading-none text-center">
+              @rod<br/>rantho
+            </span>
+          </div>
         </div>
       </aside>
 

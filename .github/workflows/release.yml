@@ -1,0 +1,92 @@
+name: Release CueDrive
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  release:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-13          # Intel macOS → .dmg x86_64
+            target: x86_64-apple-darwin
+          - platform: windows-latest    # Windows → .exe x86_64
+            target: x86_64-pc-windows-msvc
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      # ── 1. Código fuente ──────────────────────────────────────────
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ── 2. Python + analyzer binary ───────────────────────────────
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Build analyzer binary
+        shell: bash
+        run: |
+          cd analyzer
+          pip install --upgrade pip
+          pip install -r requirements.txt pyinstaller
+          pyinstaller \
+            --onefile \
+            --name analyzer-${{ matrix.target }} \
+            --distpath ../src-tauri/binaries \
+            --hidden-import=librosa \
+            --hidden-import=soundfile \
+            --hidden-import=numpy \
+            analyzer.py
+
+      # ── 3. Node.js + dependencias frontend ───────────────────────
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install frontend dependencies
+        run: npm install
+
+      # ── 4. Rust + caché ──────────────────────────────────────────
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Rust build cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      # ── 5. Build Tauri + publicar release ────────────────────────
+      - name: Build and publish Tauri release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: 'CueDrive ${{ github.ref_name }}'
+          releaseBody: |
+            ## CueDrive ${{ github.ref_name }}
+
+            DJ USB Organizer — analizá, organizá y exportá tu música a USBs.
+
+            ### Descargas / Downloads
+            | OS | Archivo |
+            |---|---|
+            | macOS (Intel x64) | `CueDrive_*_x64.dmg` |
+            | Windows 10/11 (x64) | `CueDrive_*_x64-setup.exe` |
+
+            > **macOS:** si Gatekeeper bloquea la app → clic derecho → Abrir.
+            > **Windows:** si SmartScreen avisa → "Más información" → Ejecutar de todos modos.
+          releaseDraft: false
+          prerelease: false
+          args: --target ${{ matrix.target }}
