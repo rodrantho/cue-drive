@@ -5,12 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <!-- Primary SEO -->
-  <title>CueDrive — DJ USB Organizer | Free BPM, Key &amp; Set Builder App</title>
+  <title data-en="CueDrive — DJ USB Organizer | Free BPM, Key &amp; Set Builder App"
+         data-es="CueDrive — Organizador DJ USB | BPM, Key y Armar Sets Gratis">
+    CueDrive — DJ USB Organizer | Free BPM, Key &amp; Set Builder App
+  </title>
   <meta name="description" content="CueDrive analyzes your tracks (BPM, key, energy, cue points), builds smart DJ sets with energy arc templates, and exports to Pioneer CDJ or Traktor. Free, offline, open source." />
   <meta name="keywords" content="DJ software, USB organizer, BPM analyzer, key detection, Rekordbox alternative, Pioneer CDJ, Traktor, DJ set builder, camelot wheel, free DJ app, music organizer" />
   <meta name="author" content="rodrantho" />
   <link rel="canonical" href="https://cuedrive.rodrantho.com/" />
   <meta name="google-site-verification" content="074e018be8b427fe" />
+
+  <!-- Robots & Sitemap -->
+  <meta name="robots" content="index, follow" />
+  <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
   <!-- Open Graph (social sharing) -->
   <meta property="og:type" content="website" />
@@ -51,23 +58,29 @@
   }
   </script>
 
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
   <style>
+    /* ── Reset & Variables ─────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #0a0a0f;
-      --surface:   #111118;
-      --surface-2: #1a1a24;
-      --border:    #222230;
-      --accent:    #4a9eff;
+      --bg:          #0a0a0f;
+      --surface:     #111118;
+      --surface-2:   #1a1a24;
+      --border:      #222230;
+      --accent:      #4a9eff;
+      --accent-dim:  #2e6bbf;
       --accent-glow: rgba(74,158,255,0.15);
-      --text:      #e8e8f0;
-      --muted:     #6b6b80;
-      --green:     #22c55e;
-      --orange:    #f97316;
+      --text:        #e8e8f0;
+      --muted:       #6b6b80;
+      --green:       #22c55e;
+      --orange:      #f97316;
+      --red:         #ef4444;
+      --yellow:      #eab308;
     }
 
     html { scroll-behavior: smooth; }
@@ -80,7 +93,16 @@
       overflow-x: hidden;
     }
 
-    /* ── Nav ─────────────────────────────────────────────────────── */
+    /* ── Utility ───────────────────────────────────────────────────── */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* ── Navbar ────────────────────────────────────────────────────── */
     nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -90,8 +112,8 @@
       justify-content: space-between;
       padding: 0 2rem;
       height: 60px;
-      background: rgba(10,10,15,0.85);
-      backdrop-filter: blur(12px);
+      background: rgba(10,10,15,0.88);
+      backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
     }
 
@@ -116,971 +138,952 @@
       font-size: 14px;
     }
 
-    .nav-links {
+    .nav-right {
       display: flex;
       align-items: center;
-      gap: 2rem;
+      gap: 1.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
       list-style: none;
     }
 
     .nav-links a {
-      text-decoration: none;
       color: var(--muted);
-      font-size: 0.875rem;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
       transition: color 0.2s;
     }
     .nav-links a:hover { color: var(--text); }
 
-    .nav-gh {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
+    /* Language switcher button */
+    #lang-btn {
+      background: var(--surface-2);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--muted) !important;
-      font-size: 0.8rem !important;
-      transition: border-color 0.2s, color 0.2s !important;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 5px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      transition: border-color 0.2s, background 0.2s;
     }
-    .nav-gh:hover { border-color: var(--accent) !important; color: var(--accent) !important; }
+    #lang-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
 
-    /* ── Hero ─────────────────────────────────────────────────────── */
+    /* ── Hero ──────────────────────────────────────────────────────── */
     .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      padding: 140px 0 80px;
       text-align: center;
-      padding: 100px 2rem 4rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -200px; left: 50%; transform: translateX(-50%);
-      width: 800px; height: 800px;
-      background: radial-gradient(circle, rgba(74,158,255,0.08) 0%, transparent 70%);
-      pointer-events: none;
     }
 
     .hero-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 12px;
+      background: var(--accent-glow);
       border: 1px solid rgba(74,158,255,0.3);
-      border-radius: 100px;
-      background: rgba(74,158,255,0.08);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 0.78rem;
+      font-weight: 600;
       color: var(--accent);
-      font-size: 0.75rem;
-      font-weight: 500;
-      margin-bottom: 1.5rem;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
+      margin-bottom: 1.5rem;
     }
 
     .hero h1 {
-      font-size: clamp(2.5rem, 7vw, 5rem);
+      font-size: clamp(2.4rem, 6vw, 4.2rem);
       font-weight: 800;
-      letter-spacing: -0.04em;
-      line-height: 1.05;
-      margin-bottom: 1.25rem;
-      background: linear-gradient(135deg, #ffffff 0%, #a0b8d8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .hero h1 span {
-      background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%);
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+      background: linear-gradient(135deg, #ffffff 0%, #a8c8ff 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
     .hero-sub {
-      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
       color: var(--muted);
       max-width: 560px;
-      margin-bottom: 2.5rem;
-      font-weight: 400;
+      margin: 0 auto 2.4rem;
+      line-height: 1.7;
     }
 
-    .hero-actions {
+    .hero-ctas {
       display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
+      gap: 1rem;
       justify-content: center;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 24px;
-      border-radius: 10px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      text-decoration: none;
-      transition: all 0.2s;
-      cursor: pointer;
-      border: none;
+      flex-wrap: wrap;
+      margin-bottom: 4rem;
     }
 
     .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       background: var(--accent);
       color: #fff;
-      box-shadow: 0 0 24px rgba(74,158,255,0.3);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 12px 26px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 0 28px rgba(74,158,255,0.35);
     }
     .btn-primary:hover {
-      background: #6aadff;
-      box-shadow: 0 0 32px rgba(74,158,255,0.45);
+      background: #5eabff;
       transform: translateY(-1px);
+      box-shadow: 0 0 38px rgba(74,158,255,0.5);
     }
 
     .btn-secondary {
-      background: var(--surface-2);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn-secondary:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      transform: translateY(-1px);
-    }
-
-    .btn-ghost {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid var(--border);
-    }
-    .btn-ghost:hover { color: var(--text); border-color: var(--muted); }
-
-    /* ── App mockup ───────────────────────────────────────────────── */
-    .mockup-wrap {
-      margin-top: 4rem;
-      width: 100%;
-      max-width: 900px;
-      position: relative;
-    }
-
-    .mockup {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      overflow: hidden;
-      box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
-    }
-
-    .mockup-bar {
-      height: 36px;
-      background: #0d0d14;
-      border-bottom: 1px solid var(--border);
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 0 14px;
-    }
-    .dot { width: 10px; height: 10px; border-radius: 50%; }
-    .dot-r { background: #ff5f57; }
-    .dot-y { background: #febc2e; }
-    .dot-g { background: #28c840; }
-
-    .mockup-body {
-      display: flex;
-      height: 420px;
-    }
-
-    .mockup-sidebar {
-      width: 60px;
-      background: #0d0d14;
-      border-right: 1px solid var(--border);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 16px 0;
       gap: 8px;
-    }
-
-    .mockup-icon {
-      width: 36px; height: 36px;
-      border-radius: 9px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-    }
-    .mockup-icon.active { background: var(--accent); }
-    .mockup-icon.inactive { opacity: 0.3; }
-
-    .mockup-main {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .mockup-header {
-      height: 44px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      padding: 0 16px;
-      gap: 10px;
-    }
-
-    .mockup-btn {
-      padding: 5px 12px;
-      border-radius: 7px;
-      background: var(--accent);
-      color: #fff;
-      font-size: 12px;
-      font-family: 'Inter', sans-serif;
-      font-weight: 500;
-    }
-
-    .mockup-search {
-      flex: 1;
-      height: 26px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-    }
-
-    .mockup-cols {
-      height: 32px;
-      border-bottom: 1px solid var(--border);
-      display: grid;
-      grid-template-columns: 2fr 1.5fr 80px 70px 70px 70px 90px;
-      align-items: center;
-      padding: 0 16px;
-      gap: 12px;
-    }
-    .mockup-col {
-      height: 10px;
-      background: var(--border);
-      border-radius: 3px;
-    }
-
-    .mockup-track {
-      display: grid;
-      grid-template-columns: 2fr 1.5fr 80px 70px 70px 70px 90px;
-      align-items: center;
-      padding: 0 16px;
-      height: 44px;
-      gap: 12px;
-      border-bottom: 1px solid rgba(34,34,48,0.5);
-    }
-    .mockup-track:nth-child(2) { background: var(--surface-2); border-left: 2px solid var(--accent); }
-
-    .track-info { display: flex; flex-direction: column; gap: 3px; }
-    .track-title { height: 9px; border-radius: 3px; background: var(--text); opacity: 0.7; width: 80%; }
-    .track-artist { height: 7px; border-radius: 3px; background: var(--muted); opacity: 0.5; width: 55%; }
-
-    .tag {
-      padding: 2px 7px;
-      border-radius: 5px;
-      font-size: 10px;
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 500;
-      display: inline-block;
-      width: fit-content;
-    }
-    .tag-key  { background: rgba(139,92,246,0.2); color: #a78bfa; }
-    .tag-e1   { background: rgba(74,158,255,0.2);  color: #4a9eff; }
-    .tag-e2   { background: rgba(74,255,138,0.2);  color: #4aff8a; }
-    .tag-e3   { background: rgba(255,222,74,0.2);  color: #ffde4a; }
-    .tag-e4   { background: rgba(255,138,74,0.2);  color: #ff8a4a; }
-    .tag-e5   { background: rgba(255,74,110,0.2);  color: #ff4a6e; }
-    .tag-ok   { color: var(--green); font-size: 12px; }
-
-    .bpm-val {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
+      background: transparent;
       color: var(--text);
-      opacity: 0.7;
-      text-align: center;
-    }
-    .dur-val {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--muted);
-      text-align: center;
-    }
-
-    .mockup-player {
-      height: 80px;
-      border-top: 1px solid var(--border);
-      padding: 10px 16px 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .player-top {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .play-btn {
-      width: 28px; height: 28px;
-      border-radius: 50%;
-      background: var(--accent);
-      flex-shrink: 0;
-    }
-    .player-info { flex: 1; display: flex; flex-direction: column; gap: 3px; }
-    .player-title { height: 9px; background: var(--text); border-radius: 3px; width: 45%; opacity: 0.7; }
-    .player-artist { height: 7px; background: var(--muted); border-radius: 3px; width: 30%; opacity: 0.4; }
-    .player-time { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); }
-
-    .waveform {
-      height: 32px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 1px;
-    }
-    .wave-bar {
-      flex: 1;
-      border-radius: 1px;
-      background: rgba(74,158,255,0.3);
-    }
-    .wave-bar.played { background: rgba(74,158,255,0.85); }
-
-    /* Cue markers */
-    .cue-marker {
-      position: absolute;
-      top: 0; bottom: 0;
-      width: 2px;
-    }
-    .cue-entry  { left: 18%; background: var(--green); }
-    .cue-drop   { left: 28%; background: var(--orange); }
-    .cue-break  { left: 60%; background: #3b82f6; }
-    .cue-outro  { left: 80%; background: #ef4444; }
-
-    /* ── Features grid ────────────────────────────────────────────── */
-    section { padding: 5rem 2rem; }
-
-    .section-label {
-      text-align: center;
-      font-size: 0.75rem;
+      text-decoration: none;
       font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 1rem;
-    }
-
-    .section-title {
-      text-align: center;
-      font-size: clamp(1.8rem, 4vw, 2.75rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      margin-bottom: 1rem;
-    }
-
-    .section-sub {
-      text-align: center;
-      color: var(--muted);
-      max-width: 520px;
-      margin: 0 auto 3.5rem;
-      font-size: 1.05rem;
-    }
-
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .feature-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1.75rem;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-    .feature-card:hover {
-      border-color: rgba(74,158,255,0.3);
-      transform: translateY(-2px);
-    }
-
-    .feature-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .feature-card h3 {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      letter-spacing: -0.02em;
-    }
-
-    .feature-card p {
-      font-size: 0.9rem;
-      color: var(--muted);
-      line-height: 1.6;
-    }
-
-    /* ── Energy arc visual ────────────────────────────────────────── */
-    .arc-section {
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .arc-inner {
-      max-width: 900px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: center;
-    }
-
-    .arc-visual {
-      display: flex;
-      align-items: flex-end;
-      gap: 4px;
-      height: 120px;
-      padding: 0 8px;
-    }
-
-    .arc-bar {
-      flex: 1;
-      border-radius: 3px 3px 0 0;
-      transition: height 0.3s;
-    }
-
-    .arc-templates {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .arc-tmpl {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 14px;
+      font-size: 0.95rem;
+      padding: 12px 26px;
       border-radius: 10px;
       border: 1px solid var(--border);
       cursor: pointer;
       transition: border-color 0.2s, background 0.2s;
     }
-    .arc-tmpl.active {
+    .btn-secondary:hover {
       border-color: var(--accent);
       background: var(--accent-glow);
     }
-    .arc-tmpl-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      flex-shrink: 0;
-    }
-    .arc-tmpl-name { font-size: 0.9rem; font-weight: 600; }
-    .arc-tmpl-desc { font-size: 0.78rem; color: var(--muted); margin-left: auto; }
 
-    /* ── Download ─────────────────────────────────────────────────── */
-    .download-section {
-      text-align: center;
-    }
-
-    .download-cards {
+    /* ── Screenshot Gallery ────────────────────────────────────────── */
+    .gallery-tabs {
       display: flex;
-      gap: 1.5rem;
       justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 2.5rem;
-    }
-
-    .dl-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 2rem 2.5rem;
-      text-align: left;
-      min-width: 260px;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-    .dl-card:hover {
-      border-color: rgba(74,158,255,0.4);
-      transform: translateY(-2px);
-    }
-
-    .dl-os {
-      font-size: 2.5rem;
-      margin-bottom: 0.75rem;
-    }
-
-    .dl-card h3 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      margin-bottom: 0.25rem;
-    }
-
-    .dl-card p {
-      font-size: 0.82rem;
-      color: var(--muted);
-      margin-bottom: 1.25rem;
-    }
-
-    .dl-coming-soon {
-      display: inline-flex;
-      align-items: center;
       gap: 6px;
-      padding: 5px 12px;
-      border-radius: 6px;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      font-size: 0.8rem;
+      margin-bottom: 1.4rem;
     }
 
-    .version-note {
-      margin-top: 1.5rem;
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-    .version-note a { color: var(--accent); text-decoration: none; }
-    .version-note a:hover { text-decoration: underline; }
-
-    /* ── How it works ─────────────────────────────────────────────── */
-    .steps {
-      display: flex;
-      gap: 0;
-      max-width: 800px;
-      margin: 0 auto;
-      position: relative;
-    }
-
-    .steps::before {
-      content: '';
-      position: absolute;
-      top: 28px; left: calc(100% / 6);
-      right: calc(100% / 6);
-      height: 1px;
-      background: var(--border);
-    }
-
-    .step {
-      flex: 1;
-      text-align: center;
-      padding: 0 1rem;
-    }
-
-    .step-num {
-      width: 56px; height: 56px;
-      border-radius: 50%;
+    .tab-btn {
       background: var(--surface);
       border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      margin: 0 auto 1rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    .step h3 {
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
-    }
-
-    .step p {
-      font-size: 0.82rem;
       color: var(--muted);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 8px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn:hover { color: var(--text); border-color: var(--muted); }
+    .tab-btn.active {
+      background: var(--accent-glow);
+      border-color: var(--accent);
+      color: var(--accent);
     }
 
-    /* ── Footer ───────────────────────────────────────────────────── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2.5rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: gap;
-      gap: 1rem;
+    .gallery-panel { display: none; }
+    .gallery-panel.active { display: block; }
+
+    /* macOS window chrome frame */
+    .mac-frame {
+      background: #1c1c28;
+      border-radius: 12px;
+      border: 1px solid #333345;
+      overflow: hidden;
+      box-shadow:
+        0 30px 80px rgba(0,0,0,0.7),
+        0 0 0 1px rgba(255,255,255,0.05) inset;
+      max-width: 900px;
+      margin: 0 auto;
     }
 
-    .footer-logo {
+    .mac-titlebar {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-weight: 700;
-      font-size: 1rem;
+      padding: 12px 16px;
+      background: #252535;
+      border-bottom: 1px solid #2e2e42;
     }
 
-    .footer-logo-icon {
-      width: 24px; height: 24px;
-      background: var(--accent);
-      border-radius: 6px;
+    .mac-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+    }
+    .mac-dot.red    { background: #ff5f57; }
+    .mac-dot.yellow { background: #febc2e; }
+    .mac-dot.green  { background: #28c840; }
+
+    .mac-title {
+      flex: 1;
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .mac-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Placeholder when image missing */
+    .mac-frame .img-placeholder {
+      width: 100%;
+      aspect-ratio: 16/10;
+      background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    .mac-frame .img-placeholder .placeholder-icon {
+      font-size: 2.5rem;
+      opacity: 0.4;
+    }
+
+    /* ── Section base ──────────────────────────────────────────────── */
+    section { padding: 100px 0; }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+      display: block;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 1rem;
+      max-width: 540px;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+    .section-header .section-sub { margin: 0 auto; }
+
+    /* ── Features Grid ─────────────────────────────────────────────── */
+    #features { background: var(--surface); }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5px;
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .feature-card {
+      background: var(--surface);
+      padding: 2rem;
+      transition: background 0.2s;
+    }
+    .feature-card:hover { background: var(--surface-2); }
+
+    .feature-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      letter-spacing: -0.01em;
+    }
+
+    .feature-card p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── How it works ──────────────────────────────────────────────── */
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      position: relative;
+    }
+
+    .step {
+      text-align: center;
+      padding: 2.5rem 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      position: relative;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .step:hover {
+      border-color: var(--accent);
+      transform: translateY(-3px);
+    }
+
+    .step-num {
+      width: 44px; height: 44px;
+      background: var(--accent-glow);
+      border: 1px solid rgba(74,158,255,0.35);
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      margin: 0 auto 1.2rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .step h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .step p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    /* ── Download Section ──────────────────────────────────────────── */
+    #download { background: var(--surface); }
+
+    .download-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    .download-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.2rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      transition: border-color 0.25s, transform 0.2s;
+    }
+    .download-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .download-card.disabled { opacity: 0.5; pointer-events: none; }
+    .download-card.disabled:hover { transform: none; }
+
+    .dl-os-icon {
+      font-size: 2.8rem;
+      line-height: 1;
+    }
+
+    .dl-card-info h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 0.3rem;
+    }
+
+    .dl-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .dl-size-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 0.78rem;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--muted);
+      margin-top: 0.2rem;
+      width: fit-content;
+    }
+
+    .dl-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.92rem;
+      padding: 11px 22px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 0 22px rgba(74,158,255,0.3);
+      width: 100%;
+    }
+    .dl-btn:hover {
+      background: #5eabff;
+      box-shadow: 0 0 32px rgba(74,158,255,0.5);
+    }
+
+    .dl-btn-disabled {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--surface-2);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.92rem;
+      padding: 11px 22px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      width: 100%;
+    }
+
+    /* ── Footer ────────────────────────────────────────────────────── */
+    footer {
+      padding: 2.5rem 2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
     }
 
     footer p {
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       color: var(--muted);
     }
 
     footer a {
       color: var(--accent);
       text-decoration: none;
+      font-weight: 500;
     }
     footer a:hover { text-decoration: underline; }
 
-    /* ── Responsive ───────────────────────────────────────────────── */
-    @media (max-width: 768px) {
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .footer-links a {
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text); }
+
+    /* ── Divider ───────────────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Responsive ────────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      nav { padding: 0 1rem; }
       .nav-links { display: none; }
-      .mockup-body { height: 280px; }
-      .arc-inner { grid-template-columns: 1fr; gap: 2rem; }
-      .steps { flex-direction: column; gap: 2rem; }
-      .steps::before { display: none; }
+      .hero { padding: 110px 0 60px; }
       footer { flex-direction: column; text-align: center; }
+      .footer-links { justify-content: center; }
     }
   </style>
 </head>
 <body>
 
-<!-- ── Nav ──────────────────────────────────────────────────────────── -->
-<nav>
-  <a href="/" class="nav-logo">
-    <div class="nav-logo-icon">💿</div>
-    CueDrive
-  </a>
-  <ul class="nav-links">
-    <li><a href="#features">Features</a></li>
-    <li><a href="#how">How it works</a></li>
-    <li><a href="#download">Download</a></li>
-    <li>
-      <a href="https://github.com/rodrantho/cue-drive" target="_blank" class="nav-gh">
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-        GitHub
-      </a>
-    </li>
-  </ul>
-</nav>
-
-<!-- ── Hero ─────────────────────────────────────────────────────────── -->
-<section class="hero">
-  <div class="hero-badge">✦ Free &amp; Open Source</div>
-  <h1>Your tracks.<br><span>Your sets.</span><br>Your way.</h1>
-  <p class="hero-sub">
-    CueDrive analyzes your music, builds smart DJ sets following an energy arc,
-    and exports directly to Pioneer CDJ or Traktor — fully offline, no subscription.
-  </p>
-  <div class="hero-actions">
-    <a href="#download" class="btn btn-primary">
-      ⬇ Download Free
+  <!-- ══════════════════════════════════════════════════════════════
+       NAVBAR
+  ══════════════════════════════════════════════════════════════ -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <span class="nav-logo-icon">🎧</span>
+      CueDrive
     </a>
-    <a href="https://github.com/rodrantho/cue-drive" target="_blank" class="btn btn-secondary">
-      View on GitHub
-    </a>
-  </div>
 
-  <!-- App mockup -->
-  <div class="mockup-wrap">
-    <div class="mockup">
-      <div class="mockup-bar">
-        <div class="dot dot-r"></div>
-        <div class="dot dot-y"></div>
-        <div class="dot dot-g"></div>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#features"  data-en="Features"     data-es="Funciones">Features</a></li>
+        <li><a href="#how"       data-en="How it works" data-es="Cómo funciona">How it works</a></li>
+        <li><a href="#download"  data-en="Download"     data-es="Descargar">Download</a></li>
+        <li>
+          <a href="https://github.com/rodrantho/cue-drive"
+             target="_blank" rel="noopener">GitHub</a>
+        </li>
+      </ul>
+
+      <!-- Language toggle -->
+      <button id="lang-btn" aria-label="Switch language">EN / ES</button>
+    </div>
+  </nav>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="container">
+
+      <div class="hero-badge">
+        <span>✦</span>
+        <span data-en="Free &amp; Open Source" data-es="Gratis y Código Abierto">Free &amp; Open Source</span>
       </div>
-      <div class="mockup-body">
-        <div class="mockup-sidebar">
-          <div class="mockup-icon active">📚</div>
-          <div class="mockup-icon inactive">🎛</div>
-          <div class="mockup-icon inactive">💾</div>
-        </div>
-        <div class="mockup-main">
-          <div class="mockup-header">
-            <div class="mockup-btn">Import Folder</div>
-            <div class="mockup-btn" style="background:var(--surface-2);color:var(--text);border:1px solid var(--border);">⚡ Analyze All (12)</div>
-            <div class="mockup-search"></div>
-          </div>
-          <div class="mockup-cols">
-            <div class="mockup-col"></div>
-            <div class="mockup-col" style="width:60%"></div>
-            <div class="mockup-col" style="width:50%;margin:auto"></div>
-            <div class="mockup-col" style="width:60%;margin:auto"></div>
-            <div class="mockup-col" style="width:70%;margin:auto"></div>
-            <div class="mockup-col" style="width:50%;margin:auto"></div>
-            <div class="mockup-col" style="width:50%;margin-left:auto"></div>
-          </div>
-          <!-- Tracks -->
-          <div class="mockup-track">
-            <div class="track-info"><div class="track-title"></div><div class="track-artist"></div></div>
-            <div class="track-info"><div class="track-title" style="width:65%"></div></div>
-            <div class="bpm-val">128.0</div>
-            <div style="text-align:center"><span class="tag tag-key">8A</span></div>
-            <div style="text-align:center"><span class="tag tag-e4">High</span></div>
-            <div class="dur-val">6:42</div>
-            <div style="text-align:right"><span class="tag-ok">✓</span></div>
-          </div>
-          <div class="mockup-track" style="background:var(--surface-2);border-left:2px solid var(--accent)">
-            <div class="track-info"><div class="track-title" style="width:70%"></div><div class="track-artist" style="width:45%"></div></div>
-            <div class="track-info"><div class="track-title" style="width:55%"></div></div>
-            <div class="bpm-val">132.5</div>
-            <div style="text-align:center"><span class="tag tag-key">9A</span></div>
-            <div style="text-align:center"><span class="tag tag-e5">Peak</span></div>
-            <div class="dur-val">7:14</div>
-            <div style="text-align:right"><span class="tag-ok">✓</span></div>
-          </div>
-          <div class="mockup-track">
-            <div class="track-info"><div class="track-title" style="width:60%"></div><div class="track-artist" style="width:50%"></div></div>
-            <div class="track-info"><div class="track-title" style="width:70%"></div></div>
-            <div class="bpm-val">126.0</div>
-            <div style="text-align:center"><span class="tag tag-key">7B</span></div>
-            <div style="text-align:center"><span class="tag tag-e3">Mid</span></div>
-            <div class="dur-val">5:58</div>
-            <div style="text-align:right"><span class="tag-ok">✓</span></div>
-          </div>
-          <div class="mockup-track">
-            <div class="track-info"><div class="track-title" style="width:75%"></div><div class="track-artist" style="width:40%"></div></div>
-            <div class="track-info"><div class="track-title" style="width:60%"></div></div>
-            <div class="bpm-val">—</div>
-            <div></div>
-            <div></div>
-            <div class="dur-val">6:20</div>
-            <div style="text-align:right"><span style="font-size:11px;padding:3px 8px;border-radius:5px;background:rgba(74,158,255,0.15);color:var(--accent)">Analyze</span></div>
-          </div>
-          <div style="flex:1"></div>
-          <!-- Player -->
-          <div class="mockup-player">
-            <div class="player-top">
-              <div class="play-btn"></div>
-              <div class="player-info">
-                <div class="player-title"></div>
-                <div class="player-artist"></div>
-              </div>
-              <div class="player-time">2:14 / 7:14</div>
-              <span class="tag tag-key" style="margin-left:8px">9A</span>
-              <span class="tag tag-e5" style="margin-left:4px">Peak</span>
-            </div>
-            <div class="waveform">
-              <!-- Played bars -->
-              <div class="wave-bar played" style="height:30%"></div>
-              <div class="wave-bar played" style="height:55%"></div>
-              <div class="wave-bar played" style="height:80%"></div>
-              <div class="wave-bar played" style="height:65%"></div>
-              <div class="wave-bar played" style="height:90%"></div>
-              <div class="wave-bar played" style="height:70%"></div>
-              <div class="wave-bar played" style="height:85%"></div>
-              <div class="wave-bar played" style="height:60%"></div>
-              <div class="wave-bar played" style="height:95%"></div>
-              <div class="wave-bar played" style="height:75%"></div>
-              <!-- Unplayed bars -->
-              <div class="wave-bar" style="height:80%"></div>
-              <div class="wave-bar" style="height:50%"></div>
-              <div class="wave-bar" style="height:70%"></div>
-              <div class="wave-bar" style="height:90%"></div>
-              <div class="wave-bar" style="height:60%"></div>
-              <div class="wave-bar" style="height:85%"></div>
-              <div class="wave-bar" style="height:40%"></div>
-              <div class="wave-bar" style="height:75%"></div>
-              <div class="wave-bar" style="height:55%"></div>
-              <div class="wave-bar" style="height:65%"></div>
-              <div class="wave-bar" style="height:30%"></div>
-              <div class="wave-bar" style="height:45%"></div>
-              <div class="wave-bar" style="height:25%"></div>
-              <div class="wave-bar" style="height:20%"></div>
-              <!-- Cue markers -->
-              <div class="cue-marker cue-entry"></div>
-              <div class="cue-marker cue-drop"></div>
-              <div class="cue-marker cue-break"></div>
-              <div class="cue-marker cue-outro"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- ── Features ──────────────────────────────────────────────────────── -->
-<section id="features">
-  <p class="section-label">What it does</p>
-  <h2 class="section-title">Everything a DJ needs,<br>nothing they don't.</h2>
-  <p class="section-sub">No cloud, no subscription, no AI black box. Just fast, local analysis and smart organization.</p>
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon">🎵</div>
-      <h3>Deep Audio Analysis</h3>
-      <p>BPM, key (Camelot + standard), energy level 1–5, vocal detection, mood tags, and full track structure — all computed locally with librosa.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🎛</div>
-      <h3>Smart Set Builder</h3>
-      <p>Choose a template (Warm-up, Peak, Closing, Full Night) and let CueDrive build a harmonically compatible set following an energy arc — or pick your own tracks manually.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🔊</div>
-      <h3>Waveform Preview</h3>
-      <p>Instant waveform display with pre-computed peaks. Click any cue point marker to jump straight to the drop, break, or exit. High quality, no lag.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">💿</div>
-      <h3>Pioneer CDJ Export</h3>
-      <p>Generates a Rekordbox-compatible SQLite database with cue points, ready to drop on a USB and plug into any CDJ-2000 or CDJ-3000.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🎚</div>
-      <h3>Traktor Export</h3>
-      <p>Exports a <code style="font-family:monospace;font-size:0.85em;color:var(--accent)">collection.nml</code> file fully compatible with Native Instruments Traktor Pro.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🌐</div>
-      <h3>EN / ES Bilingual</h3>
-      <p>Full English and Spanish interface. Switch languages instantly from the sidebar — no restart needed.</p>
-    </div>
-  </div>
-</section>
+      <h1 data-en="Your tracks. Your sets. Your way."
+          data-es="Tus tracks. Tu set. A tu manera.">
+        Your tracks. Your sets.<br>Your way.
+      </h1>
 
-<!-- ── Energy Arc ────────────────────────────────────────────────────── -->
-<section class="arc-section" id="arc">
-  <div class="arc-inner">
-    <div>
-      <p class="section-label" style="text-align:left">Set Builder</p>
-      <h2 class="section-title" style="text-align:left;font-size:2rem">Energy arc<br>templates</h2>
-      <p style="color:var(--muted);font-size:0.95rem;margin-bottom:2rem;line-height:1.7">
-        Every great DJ set tells a story through energy. CueDrive uses four pre-built arc templates to select and sequence tracks so the crowd goes exactly where you want them.
+      <p class="hero-sub"
+         data-en="CueDrive analyzes your music library — BPM, key, energy — builds intelligent DJ sets with energy arc templates, and exports directly to Pioneer CDJ or Traktor. Offline. Always free."
+         data-es="CueDrive analiza tu biblioteca musical — BPM, key, energía — arma sets de DJ inteligentes con plantillas de arco de energía, y exporta directo a Pioneer CDJ o Traktor. Sin internet. Siempre gratis.">
+        CueDrive analyzes your music library — BPM, key, energy — builds intelligent DJ sets
+        with energy arc templates, and exports directly to Pioneer CDJ or Traktor.
+        Offline. Always free.
       </p>
-      <div class="arc-templates">
-        <div class="arc-tmpl active">
-          <div class="arc-tmpl-dot"></div>
-          <span class="arc-tmpl-name">Warm-up</span>
-          <span class="arc-tmpl-desc">1 → 4 energy</span>
-        </div>
-        <div class="arc-tmpl">
-          <div class="arc-tmpl-dot" style="background:#f97316"></div>
-          <span class="arc-tmpl-name">Peak Time</span>
-          <span class="arc-tmpl-desc">3 → 5 → 3 energy</span>
-        </div>
-        <div class="arc-tmpl">
-          <div class="arc-tmpl-dot" style="background:#a78bfa"></div>
-          <span class="arc-tmpl-name">Closing</span>
-          <span class="arc-tmpl-desc">4 → 1 energy</span>
-        </div>
-        <div class="arc-tmpl">
-          <div class="arc-tmpl-dot" style="background:#22c55e"></div>
-          <span class="arc-tmpl-name">Full Night</span>
-          <span class="arc-tmpl-desc">1 → 5 → 2 energy</span>
+
+      <div class="hero-ctas">
+        <a href="https://github.com/rodrantho/cue-drive/releases/download/v0.1.0/CueDrive_0.1.0_x64.dmg"
+           class="btn-primary">
+          <span>⬇</span>
+          <span data-en="Download Free" data-es="Descargar Gratis">Download Free</span>
+        </a>
+        <a href="https://github.com/rodrantho/cue-drive"
+           target="_blank" rel="noopener"
+           class="btn-secondary">
+          <span>⌥</span>
+          <span data-en="View on GitHub" data-es="Ver en GitHub">View on GitHub</span>
+        </a>
+      </div>
+
+      <!-- ── Screenshot Gallery ─────────────────────────────────── -->
+      <div class="gallery-tabs">
+        <button class="tab-btn active" data-tab="library"
+                data-en="Library" data-es="Librería">Library</button>
+        <button class="tab-btn" data-tab="setbuilder"
+                data-en="Set Builder" data-es="Armar Set">Set Builder</button>
+        <button class="tab-btn" data-tab="export"
+                data-en="Export" data-es="Exportar">Export</button>
+      </div>
+
+      <!-- Library tab -->
+      <div class="gallery-panel active" id="panel-library">
+        <div class="mac-frame">
+          <div class="mac-titlebar">
+            <span class="mac-dot red"></span>
+            <span class="mac-dot yellow"></span>
+            <span class="mac-dot green"></span>
+            <span class="mac-title mono"
+                  data-en="CueDrive — Library" data-es="CueDrive — Librería">
+              CueDrive — Library
+            </span>
+          </div>
+          <img src="img/screen-library.png"
+               alt="CueDrive Library view — tracks with BPM, key and energy badges"
+               loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+          <div class="img-placeholder" style="display:none;">
+            <span class="placeholder-icon">🎵</span>
+            <span class="mono" style="font-size:0.8rem;">screen-library.png</span>
+          </div>
         </div>
       </div>
-    </div>
-    <div>
-      <div class="arc-visual" id="arc-viz">
-        <!-- bars injected by JS -->
+
+      <!-- Set Builder tab -->
+      <div class="gallery-panel" id="panel-setbuilder">
+        <div class="mac-frame">
+          <div class="mac-titlebar">
+            <span class="mac-dot red"></span>
+            <span class="mac-dot yellow"></span>
+            <span class="mac-dot green"></span>
+            <span class="mac-title mono"
+                  data-en="CueDrive — Set Builder" data-es="CueDrive — Armar Set">
+              CueDrive — Set Builder
+            </span>
+          </div>
+          <img src="img/screen-setbuilder.png"
+               alt="CueDrive Set Builder — energy arc bars and track list"
+               loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+          <div class="img-placeholder" style="display:none;">
+            <span class="placeholder-icon">📊</span>
+            <span class="mono" style="font-size:0.8rem;">screen-setbuilder.png</span>
+          </div>
+        </div>
       </div>
-      <div style="display:flex;justify-content:space-between;margin-top:6px;padding:0 8px">
-        <span style="font-size:0.72rem;color:var(--muted)">Track 1</span>
-        <span style="font-size:0.72rem;color:var(--muted)">Last track</span>
+
+      <!-- Export tab -->
+      <div class="gallery-panel" id="panel-export">
+        <div class="mac-frame">
+          <div class="mac-titlebar">
+            <span class="mac-dot red"></span>
+            <span class="mac-dot yellow"></span>
+            <span class="mac-dot green"></span>
+            <span class="mac-title mono"
+                  data-en="CueDrive — Export" data-es="CueDrive — Exportar">
+              CueDrive — Export
+            </span>
+          </div>
+          <img src="img/screen-export.png"
+               alt="CueDrive Export — Pioneer CDJ, Traktor and Files options"
+               loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+          <div class="img-placeholder" style="display:none;">
+            <span class="placeholder-icon">💾</span>
+            <span class="mono" style="font-size:0.8rem;">screen-export.png</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /container -->
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       FEATURES
+  ══════════════════════════════════════════════════════════════ -->
+  <section id="features">
+    <div class="container">
+
+      <div class="section-header">
+        <span class="section-label mono">Features</span>
+        <h2 class="section-title"
+            data-en="Everything a DJ needs"
+            data-es="Todo lo que un DJ necesita">
+          Everything a DJ needs
+        </h2>
+        <p class="section-sub"
+           data-en="One app to analyze, organize and export your entire music library."
+           data-es="Una sola app para analizar, organizar y exportar toda tu biblioteca musical.">
+          One app to analyze, organize and export your entire music library.
+        </p>
+      </div>
+
+      <div class="features-grid">
+
+        <div class="feature-card">
+          <span class="feature-icon">🔬</span>
+          <h3 data-en="Deep Track Analysis" data-es="Análisis Profundo de Tracks">Deep Track Analysis</h3>
+          <p data-en="Auto-detect BPM, musical key (Camelot wheel), and energy level for every track in your library. No manual tagging."
+             data-es="Detecta automáticamente BPM, tonalidad (rueda Camelot) y nivel de energía de cada track. Sin etiquetado manual.">
+            Auto-detect BPM, musical key (Camelot wheel), and energy level for every track in your library. No manual tagging.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-icon">⚡</span>
+          <h3 data-en="Smart Set Builder" data-es="Armador de Sets Inteligente">Smart Set Builder</h3>
+          <p data-en="Build DJ sets that follow a natural energy arc — warm-up, peak, cool-down — with drag-and-drop track ordering and harmonic mix suggestions."
+             data-es="Construye sets que siguen un arco de energía natural — warm-up, peak, cool-down — con orden drag-and-drop y sugerencias de mezcla armónica.">
+            Build DJ sets that follow a natural energy arc — warm-up, peak, cool-down — with drag-and-drop track ordering and harmonic mix suggestions.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-icon">🌊</span>
+          <h3 data-en="Waveform Preview" data-es="Vista de Forma de Onda">Waveform Preview</h3>
+          <p data-en="Visual waveform rendering with cue point markers lets you preview tracks and plan transitions before you ever plug in a USB."
+             data-es="Visualización de forma de onda con marcadores de cue te permite previsualizar tracks y planear transiciones antes de conectar el USB.">
+            Visual waveform rendering with cue point markers lets you preview tracks and plan transitions before you ever plug in a USB.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-icon">💿</span>
+          <h3 data-en="Pioneer CDJ Export" data-es="Exportar a Pioneer CDJ">Pioneer CDJ Export</h3>
+          <p data-en="Export your set directly to a USB formatted for Pioneer CDJ-2000NXS2, XDJ-700, XDJ-RX3 and all NXS2-compatible players."
+             data-es="Exporta tu set directo a un USB formateado para Pioneer CDJ-2000NXS2, XDJ-700, XDJ-RX3 y todos los players compatibles con NXS2.">
+            Export your set directly to a USB formatted for Pioneer CDJ-2000NXS2, XDJ-700, XDJ-RX3 and all NXS2-compatible players.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-icon">🎛️</span>
+          <h3 data-en="Traktor Support" data-es="Soporte para Traktor">Traktor Support</h3>
+          <p data-en="Export your library as a Traktor NML collection, preserving cue points, BPM grids, and folder structure for seamless integration."
+             data-es="Exporta tu biblioteca como colección NML de Traktor, conservando cue points, grillas de BPM y estructura de carpetas.">
+            Export your library as a Traktor NML collection, preserving cue points, BPM grids, and folder structure for seamless integration.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-icon">🌍</span>
+          <h3 data-en="Bilingual Interface" data-es="Interfaz Bilingüe">Bilingual Interface</h3>
+          <p data-en="Full English and Spanish support throughout the app. Switch in one click — no restart needed."
+             data-es="Soporte completo en inglés y español en toda la app. Cambia con un clic — sin reiniciar.">
+            Full English and Spanish support throughout the app. Switch in one click — no restart needed.
+          </p>
+        </div>
+
+      </div><!-- /features-grid -->
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       HOW IT WORKS
+  ══════════════════════════════════════════════════════════════ -->
+  <section id="how">
+    <div class="container">
+
+      <div class="section-header">
+        <span class="section-label mono">Workflow</span>
+        <h2 class="section-title"
+            data-en="From folder to USB in minutes"
+            data-es="De la carpeta al USB en minutos">
+          From folder to USB in minutes
+        </h2>
+        <p class="section-sub"
+           data-en="Three steps. No account. No cloud. No subscription."
+           data-es="Tres pasos. Sin cuenta. Sin nube. Sin suscripción.">
+          Three steps. No account. No cloud. No subscription.
+        </p>
+      </div>
+
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-num">01</div>
+          <h3 data-en="Import" data-es="Importar">Import</h3>
+          <p data-en="Point CueDrive at any folder on your Mac. It scans all audio files — MP3, FLAC, AAC, WAV — instantly."
+             data-es="Señala CueDrive a cualquier carpeta en tu Mac. Escanea todos los archivos de audio — MP3, FLAC, AAC, WAV — al instante.">
+            Point CueDrive at any folder on your Mac. It scans all audio files — MP3, FLAC, AAC, WAV — instantly.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="step-num">02</div>
+          <h3 data-en="Analyze" data-es="Analizar">Analyze</h3>
+          <p data-en="CueDrive detects BPM, key, and energy for each track and lets you build a set using the visual energy arc editor."
+             data-es="CueDrive detecta BPM, tonalidad y energía de cada track y te permite armar un set con el editor visual de arco de energía.">
+            CueDrive detects BPM, key, and energy for each track and lets you build a set using the visual energy arc editor.
+          </p>
+        </div>
+
+        <div class="step">
+          <div class="step-num">03</div>
+          <h3 data-en="Export" data-es="Exportar">Export</h3>
+          <p data-en="Choose Pioneer CDJ, Traktor, or plain files. CueDrive writes everything to your USB — ready to plug into any booth."
+             data-es="Elige Pioneer CDJ, Traktor o archivos planos. CueDrive escribe todo en tu USB — listo para conectar en cualquier booth.">
+            Choose Pioneer CDJ, Traktor, or plain files. CueDrive writes everything to your USB — ready to plug into any booth.
+          </p>
+        </div>
+
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ── How it works ──────────────────────────────────────────────────── -->
-<section id="how">
-  <p class="section-label">Workflow</p>
-  <h2 class="section-title">From folder to USB<br>in minutes.</h2>
-  <p class="section-sub">Simple three-step workflow. No account, no internet, no cloud storage.</p>
-  <div class="steps">
-    <div class="step">
-      <div class="step-num">📂</div>
-      <h3>Import</h3>
-      <p>Drop in your music folder. CueDrive reads tags from MP3, FLAC, WAV, M4A, AIFF and more.</p>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       DOWNLOAD
+  ══════════════════════════════════════════════════════════════ -->
+  <section id="download">
+    <div class="container">
+
+      <div class="section-header">
+        <span class="section-label mono">v0.1.0</span>
+        <h2 class="section-title"
+            data-en="Free. Always."
+            data-es="Gratis. Siempre.">
+          Free. Always.
+        </h2>
+        <p class="section-sub"
+           data-en="No account required. No telemetry. No subscription. Just download and play."
+           data-es="Sin cuenta. Sin telemetría. Sin suscripción. Solo descarga y reproduce.">
+          No account required. No telemetry. No subscription. Just download and play.
+        </p>
+      </div>
+
+      <div class="download-cards">
+
+        <!-- macOS card -->
+        <div class="download-card">
+          <div class="dl-os-icon">🍎</div>
+          <div class="dl-card-info">
+            <h3>macOS</h3>
+            <div class="dl-meta">
+              <span data-en="macOS 11 or later · Intel x64"
+                    data-es="macOS 11 o superior · Intel x64">
+                macOS 11 or later · Intel x64
+              </span>
+            </div>
+            <div class="dl-size-badge">
+              <span>📦</span>
+              <span>~4.8 MB · DMG</span>
+            </div>
+          </div>
+          <a href="https://github.com/rodrantho/cue-drive/releases/download/v0.1.0/CueDrive_0.1.0_x64.dmg"
+             class="dl-btn">
+            <span>⬇</span>
+            <span data-en="Download for macOS" data-es="Descargar para macOS">Download for macOS</span>
+          </a>
+        </div>
+
+        <!-- Windows card (coming soon) -->
+        <div class="download-card disabled">
+          <div class="dl-os-icon">🪟</div>
+          <div class="dl-card-info">
+            <h3>Windows</h3>
+            <div class="dl-meta">
+              <span data-en="Windows 10 or later · 64-bit"
+                    data-es="Windows 10 o superior · 64-bit">
+                Windows 10 or later · 64-bit
+              </span>
+            </div>
+            <div class="dl-size-badge">
+              <span>⏳</span>
+              <span data-en="Coming soon" data-es="Próximamente">Coming soon</span>
+            </div>
+          </div>
+          <div class="dl-btn-disabled">
+            <span>⏳</span>
+            <span data-en="Coming Soon" data-es="Próximamente">Coming Soon</span>
+          </div>
+        </div>
+
+      </div><!-- /download-cards -->
     </div>
-    <div class="step">
-      <div class="step-num">⚡</div>
-      <h3>Analyze</h3>
-      <p>Hit "Analyze All". BPM, key, energy, structure and cue points are computed in the background — 3 tracks at a time.</p>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════════════════════════ -->
+  <footer>
+    <p>Made with ♥ by
+      <a href="https://github.com/rodrantho" target="_blank" rel="noopener">@rodrantho</a>
+      &nbsp;·&nbsp;
+      <span data-en="MIT License — free forever"
+            data-es="Licencia MIT — gratis para siempre">
+        MIT License — free forever
+      </span>
+    </p>
+
+    <div class="footer-links">
+      <a href="https://github.com/rodrantho/cue-drive"
+         target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/rodrantho/cue-drive/releases"
+         target="_blank" rel="noopener"
+         data-en="Releases" data-es="Versiones">Releases</a>
+      <a href="https://github.com/rodrantho/cue-drive/issues"
+         target="_blank" rel="noopener"
+         data-en="Issues" data-es="Reportar bug">Issues</a>
     </div>
-    <div class="step">
-      <div class="step-num">💾</div>
-      <h3>Export</h3>
-      <p>Build your set, preview tracks, then export to your USB as a Rekordbox database, Traktor NML, or organized files.</p>
-    </div>
-  </div>
-</section>
+  </footer>
 
-<!-- ── Download ──────────────────────────────────────────────────────── -->
-<section id="download" class="download-section">
-  <p class="section-label">Download</p>
-  <h2 class="section-title">Free. Always.</h2>
-  <p class="section-sub">CueDrive is open source under the MIT license. No subscription, no trial, no limits.</p>
 
-  <div class="download-cards">
-    <div class="dl-card">
-      <div class="dl-os">🍎</div>
-      <h3>macOS</h3>
-      <p>macOS 11 Big Sur or later<br>Apple Silicon &amp; Intel</p>
-      <span class="dl-coming-soon">🔜 Coming soon</span>
-    </div>
-    <div class="dl-card">
-      <div class="dl-os">🪟</div>
-      <h3>Windows</h3>
-      <p>Windows 10 / 11<br>64-bit installer</p>
-      <span class="dl-coming-soon">🔜 Coming soon</span>
-    </div>
-  </div>
+  <!-- ══════════════════════════════════════════════════════════════
+       JAVASCRIPT — Tabs + Language Switcher
+  ══════════════════════════════════════════════════════════════ -->
+  <script>
+    /* ── Screenshot tabs ──────────────────────────────────────── */
+    const tabBtns   = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.gallery-panel');
 
-  <p class="version-note">
-    Builds coming in v0.1.0. Star the repo on
-    <a href="https://github.com/rodrantho/cue-drive" target="_blank">GitHub</a>
-    to get notified when they drop. ·
-    Built by <a href="https://github.com/rodrantho" target="_blank">@rodrantho</a>
-  </p>
-</section>
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.tab;
 
-<!-- ── Footer ────────────────────────────────────────────────────────── -->
-<footer>
-  <div class="footer-logo">
-    <div class="footer-logo-icon">💿</div>
-    CueDrive
-  </div>
-  <p>Made with ♥ by <a href="https://github.com/rodrantho" target="_blank">@rodrantho</a> · <a href="https://github.com/rodrantho/cue-drive" target="_blank">Open Source</a> · MIT License</p>
-  <p style="font-size:0.78rem;color:var(--muted)">v0.1.0-beta</p>
-</footer>
+        tabBtns.forEach(b => b.classList.remove('active'));
+        tabPanels.forEach(p => p.classList.remove('active'));
 
-<script>
-  // ── Energy arc interactive visualization ─────────────────────────
-  const ARCS = {
-    warmup:    [1,1,2,2,2,3,3,3,4,4],
-    peak:      [3,4,4,5,5,5,5,4,4,3],
-    closing:   [4,4,3,3,2,2,2,1,1,1],
-    fullnight: [1,2,2,3,4,5,5,4,3,2],
-  };
-  const COLORS = ['','#4a9eff','#4aff8a','#ffde4a','#ff8a4a','#ff4a6e'];
-  const tmplKeys = ['warmup','peak','closing','fullnight'];
-  let activeIdx = 0;
-
-  function renderArc(key) {
-    const bars = ARCS[key];
-    const viz = document.getElementById('arc-viz');
-    viz.innerHTML = bars.map(e =>
-      `<div class="arc-bar" style="height:${(e/5)*100}%;background:${COLORS[e]}"></div>`
-    ).join('');
-  }
-
-  document.querySelectorAll('.arc-tmpl').forEach((el, i) => {
-    el.addEventListener('click', () => {
-      document.querySelectorAll('.arc-tmpl').forEach(e => e.classList.remove('active'));
-      el.classList.add('active');
-      renderArc(tmplKeys[i]);
+        btn.classList.add('active');
+        document.getElementById('panel-' + target).classList.add('active');
+      });
     });
-  });
 
-  renderArc('warmup');
-</script>
+
+    /* ── Language switcher ────────────────────────────────────── */
+    let currentLang = 'en'; // default
+
+    const langBtn = document.getElementById('lang-btn');
+
+    /**
+     * Swap every element that has data-en / data-es attributes,
+     * including the <title> tag.
+     */
+    function applyLang(lang) {
+      const els = document.querySelectorAll('[data-en]');
+
+      els.forEach(el => {
+        const text = el.getAttribute('data-' + lang);
+        if (!text) return;
+
+        // <title> is a special case — set .text, not .textContent
+        if (el.tagName === 'TITLE') {
+          // decode HTML entities for the title
+          const div = document.createElement('div');
+          div.innerHTML = text;
+          document.title = div.textContent;
+        } else {
+          // Preserve innerHTML for elements that might have child nodes (like <br>)
+          // but only update if it's a plain text node
+          if (el.children.length === 0) {
+            el.textContent = text;
+          } else {
+            // element has child tags — just swap its own text without touching children
+            // We use a wrapper approach for elements like h1 that may contain <br>
+            el.innerHTML = text;
+          }
+        }
+      });
+
+      // Update <html lang="…">
+      document.documentElement.lang = lang;
+
+      // Update button label
+      langBtn.textContent = lang === 'en' ? 'EN / ES' : 'ES / EN';
+    }
+
+    langBtn.addEventListener('click', () => {
+      currentLang = currentLang === 'en' ? 'es' : 'en';
+      applyLang(currentLang);
+    });
+  </script>
+
 </body>
 </html>
