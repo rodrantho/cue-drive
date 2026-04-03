@@ -86,6 +86,11 @@ export const translations = {
     exp_export_btn: (n: number) => `Export ${n} tracks`,
     exp_source_set: (n: number, name: string) => `Exporting ${n} tracks from set "${name}"`,
     exp_source_all: (n: number) => `Exporting ${n} tracks (all analyzed)`,
+
+    // Updater
+    update_available: "New version available",
+    update_install: "Update",
+    update_installing: "Installing…",
   },
 
   es: {
@@ -173,6 +178,11 @@ export const translations = {
     exp_export_btn: (n: number) => `Exportar ${n} tracks`,
     exp_source_set: (n: number, name: string) => `Exportando ${n} tracks del set "${name}"`,
     exp_source_all: (n: number) => `Exportando ${n} tracks (todos los analizados)`,
+
+    // Updater
+    update_available: "Nueva versión disponible",
+    update_install: "Actualizar",
+    update_installing: "Instalando…",
   },
 } as const;
 

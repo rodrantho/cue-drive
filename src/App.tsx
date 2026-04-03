@@ -5,6 +5,7 @@ import { LibraryView } from "./components/library/LibraryView";
 import { SetBuilderView } from "./components/setbuilder/SetBuilderView";
 import { ExportView } from "./components/export/ExportView";
 import { AudioPlayer } from "./components/player/AudioPlayer";
+import { UpdateBanner } from "./components/updater/UpdateBanner";
 import { cn } from "./utils/cn";
 import { useT, useLangStore } from "./i18n/useT";
 import { useLibraryStore } from "./store/library";
@@ -121,6 +122,9 @@ export default function App() {
           <div className="flex-1" />
           <span className="text-xs text-[var(--color-text-muted)] font-mono">CueDrive</span>
         </div>
+
+        {/* Update banner */}
+        <UpdateBanner />
 
         {/* Content */}
         <div className="flex-1 overflow-hidden">

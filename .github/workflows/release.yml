@@ -14,7 +14,7 @@ jobs:
         include:
           - platform: macos-13          # Intel macOS → .dmg x86_64
             target: x86_64-apple-darwin
-          - platform: windows-latest    # Windows → .exe x86_64
+          - platform: windows-latest    # Windows → .exe + .msi x86_64
             target: x86_64-pc-windows-msvc
 
     runs-on: ${{ matrix.platform }}
@@ -30,19 +30,35 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Build analyzer binary
-        shell: bash
+      - name: Build analyzer binary (macOS)
+        if: matrix.platform == 'macos-13'
         run: |
           cd analyzer
           pip install --upgrade pip
           pip install -r requirements.txt pyinstaller
           pyinstaller \
             --onefile \
-            --name analyzer-${{ matrix.target }} \
+            --name "analyzer-x86_64-apple-darwin" \
             --distpath ../src-tauri/binaries \
             --hidden-import=librosa \
             --hidden-import=soundfile \
             --hidden-import=numpy \
+            analyzer.py
+
+      - name: Build analyzer binary (Windows)
+        if: matrix.platform == 'windows-latest'
+        shell: pwsh
+        run: |
+          cd analyzer
+          pip install --upgrade pip
+          pip install -r requirements.txt pyinstaller
+          pyinstaller `
+            --onefile `
+            --name "analyzer-x86_64-pc-windows-msvc" `
+            --distpath "../src-tauri/binaries" `
+            --hidden-import=librosa `
+            --hidden-import=soundfile `
+            --hidden-import=numpy `
             analyzer.py
 
       # ── 3. Node.js + dependencias frontend ───────────────────────
@@ -67,10 +83,18 @@ jobs:
           workspaces: './src-tauri -> target'
 
       # ── 5. Build Tauri + publicar release ────────────────────────
+      #
+      #  tauri-action sube automáticamente al GitHub Release:
+      #    macOS  → CueDrive_x.x.x_x64.dmg
+      #    Windows → CueDrive_x.x.x_x64-setup.exe
+      #    +       → latest.json  (usado por el auto-updater interno)
+      #
       - name: Build and publish Tauri release
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: 'CueDrive ${{ github.ref_name }}'
@@ -80,13 +104,14 @@ jobs:
             DJ USB Organizer — analizá, organizá y exportá tu música a USBs.
 
             ### Descargas / Downloads
-            | OS | Archivo |
+            | Sistema | Archivo |
             |---|---|
-            | macOS (Intel x64) | `CueDrive_*_x64.dmg` |
+            | macOS Intel (x64) | `CueDrive_*_x64.dmg` |
             | Windows 10/11 (x64) | `CueDrive_*_x64-setup.exe` |
 
             > **macOS:** si Gatekeeper bloquea la app → clic derecho → Abrir.
             > **Windows:** si SmartScreen avisa → "Más información" → Ejecutar de todos modos.
           releaseDraft: false
           prerelease: false
+          updaterJsonPreferNsis: true
           args: --target ${{ matrix.target }}
