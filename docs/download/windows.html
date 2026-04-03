@@ -2,18 +2,89 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="refresh" content="0; url=https://github.com/rodrantho/cue-drive/releases/latest/download/CueDrive_0.1.0_x64-setup.exe" />
   <title>Downloading CueDrive for Windows…</title>
   <style>
-    body { font-family: -apple-system, sans-serif; background: #0f0f13; color: #e2e8f0; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; flex-direction: column; gap: 16px; }
-    .spinner { width: 32px; height: 32px; border: 3px solid #ffffff20; border-top-color: #7c3aed; border-radius: 50%; animation: spin .8s linear infinite; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0f0f13;
+      color: #e2e8f0;
+      display: flex; align-items: center; justify-content: center;
+      height: 100vh; flex-direction: column; gap: 20px;
+      text-align: center; padding: 24px;
+    }
+    .icon { font-size: 3rem; }
+    h1 { font-size: 1.4rem; font-weight: 700; }
+    p { color: #94a3b8; font-size: .95rem; line-height: 1.6; }
+    .back-btn {
+      margin-top: 8px;
+      display: inline-block;
+      padding: 10px 24px;
+      background: #7c3aed;
+      color: #fff;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: .95rem;
+      transition: opacity .2s;
+    }
+    .back-btn:hover { opacity: .85; }
+    .countdown { font-size: .8rem; color: #64748b; margin-top: 4px; }
+    .spinner { width: 32px; height: 32px; border: 3px solid #ffffff15; border-top-color: #7c3aed; border-radius: 50%; animation: spin .8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    a { color: #7c3aed; }
+    #step-loading { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    #step-done    { display: none;  flex-direction: column; align-items: center; gap: 16px; }
   </style>
 </head>
 <body>
-  <div class="spinner"></div>
-  <p>Descargando CueDrive para Windows…</p>
-  <p style="font-size:.85rem;opacity:.5">Si la descarga no inicia, <a href="https://github.com/rodrantho/cue-drive/releases/latest/download/CueDrive_0.1.0_x64-setup.exe">hacé clic aquí</a>.</p>
+
+  <div id="step-loading">
+    <div class="spinner"></div>
+    <h1>Iniciando descarga…</h1>
+    <p>Se está descargando <strong>CueDrive para Windows</strong>.<br>Revisá tu carpeta de Descargas.</p>
+  </div>
+
+  <div id="step-done">
+    <div class="icon">✅</div>
+    <h1>¡Descarga iniciada!</h1>
+    <p>Si el archivo no aparece, usá el link de abajo.<br>
+       Recordá: si Windows SmartScreen aparece →<br>
+       <em>"Más información" → "Ejecutar de todos modos"</em></p>
+    <a href="https://cuedrive.rodrantho.com" class="back-btn">← Volver a la web</a>
+    <p style="margin-top:4px;font-size:.8rem;color:#475569;">
+      ¿No empezó? <a href="https://github.com/rodrantho/cue-drive/releases/latest/download/CueDrive_0.1.0_x64-setup.exe" style="color:#7c3aed;">Descargar directo</a>
+    </p>
+    <p class="countdown" id="countdown">Volviendo a la web en <span id="sec">8</span>s…</p>
+  </div>
+
+  <script>
+    // Trigger download via hidden link
+    window.addEventListener("load", function () {
+      const a = document.createElement("a");
+      a.href = "https://github.com/rodrantho/cue-drive/releases/latest/download/CueDrive_0.1.0_x64-setup.exe";
+      a.download = "";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      // Show success state after 2s
+      setTimeout(function () {
+        document.getElementById("step-loading").style.display = "none";
+        document.getElementById("step-done").style.display = "flex";
+
+        // Countdown back to site
+        var sec = 8;
+        var el = document.getElementById("sec");
+        var interval = setInterval(function () {
+          sec--;
+          el.textContent = sec;
+          if (sec <= 0) {
+            clearInterval(interval);
+            window.location.href = "https://cuedrive.rodrantho.com";
+          }
+        }, 1000);
+      }, 2000);
+    });
+  </script>
 </body>
 </html>
