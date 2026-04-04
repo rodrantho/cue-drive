@@ -1,5 +1,5 @@
 use walkdir::WalkDir;
-use tokio::process::Command;
+use tauri_plugin_shell::ShellExt;
 
 use crate::audio::metadata::{is_audio_file, read_metadata};
 use crate::audio::models::{AnalysisResult, Track};
@@ -18,51 +18,21 @@ pub async fn import_folder(path: String) -> Result<Vec<Track>, String> {
     Ok(tracks)
 }
 
-/// Locate the analyzer.py script relative to the binary
-fn analyzer_script_path() -> String {
-    // In dev: binary is at src-tauri/target/debug/cue-drive
-    // Script is at src-tauri/../../../analyzer/analyzer.py
-    // In production: use a path relative to the app bundle
-    if let Ok(exe) = std::env::current_exe() {
-        // Walk up from the binary to find the project root
-        let mut dir = exe.clone();
-        for _ in 0..5 {
-            dir.pop();
-            let candidate = dir.join("analyzer").join("analyzer.py");
-            if candidate.exists() {
-                return candidate.to_string_lossy().to_string();
-            }
-        }
-    }
-    // Fallback: relative to current working directory
-    "analyzer/analyzer.py".to_string()
-}
-
-/// Find python3 executable
-fn python_path() -> String {
-    for p in &["/usr/bin/python3", "/usr/local/bin/python3", "python3"] {
-        if std::path::Path::new(p).exists() {
-            return p.to_string();
-        }
-    }
-    "python3".to_string()
-}
-
-/// Run Python analyzer on a single track
+/// Run the bundled analyzer binary on a single track via Tauri sidecar
 #[tauri::command]
 pub async fn analyze_track(
+    app: tauri::AppHandle,
     track_id: String,
     path: String,
 ) -> Result<Track, String> {
-    let script = analyzer_script_path();
-    let python = python_path();
-
-    let output = Command::new(&python)
-        .arg(&script)
+    let output = app
+        .shell()
+        .sidecar("analyzer")
+        .map_err(|e| format!("Analyzer not found: {e}"))?
         .arg(&path)
         .output()
         .await
-        .map_err(|e| format!("Failed to run analyzer (python={python}, script={script}): {e}"))?;
+        .map_err(|e| format!("Failed to run analyzer: {e}"))?;
 
     if !output.status.success() {
         let stderr = String::from_utf8_lossy(&output.stderr);
@@ -70,8 +40,8 @@ pub async fn analyze_track(
     }
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    let result: AnalysisResult =
-        serde_json::from_str(&stdout).map_err(|e| format!("Parse error: {e} | output: {stdout}"))?;
+    let result: AnalysisResult = serde_json::from_str(&stdout)
+        .map_err(|e| format!("Parse error: {e} | output: {stdout}"))?;
 
     if let Some(err) = result.error {
         return Err(err);
