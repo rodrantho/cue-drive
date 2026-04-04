@@ -689,8 +689,7 @@
       </p>
 
       <div class="hero-ctas">
-        <a href="https://cuedrive.rodrantho.com/download/macos.html"
-           class="btn-primary">
+        <a href="#download" class="btn-primary">
           <span>⬇</span>
           <span data-en="Download Free" data-es="Descargar Gratis">Download Free</span>
         </a>
@@ -853,6 +852,24 @@
         </div>
 
         <div class="feature-card">
+          <span class="feature-icon">📚</span>
+          <h3 data-en="Multi-folder Library" data-es="Librería Multi-carpeta">Multi-folder Library</h3>
+          <p data-en="Import from multiple folders and organize tracks into manual or smart collections — like crates in Serato or Rekordbox."
+             data-es="Importá de múltiples carpetas y organizá tus tracks en colecciones manuales o inteligentes — como crates en Serato o Rekordbox.">
+            Import from multiple folders and organize tracks into manual or smart collections — like crates in Serato or Rekordbox.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <span class="feature-icon">🎚️</span>
+          <h3 data-en="Bass &amp; Vocal Compatibility" data-es="Compatibilidad de Bajos y Vocales">Bass &amp; Vocal Compatibility</h3>
+          <p data-en="The set builder detects bass energy (sub-bass and bass) and avoids placing two vocal tracks back-to-back, for smoother transitions."
+             data-es="El armador de sets detecta energía de bajos (sub-bass y bass) y evita poner dos tracks con voz seguidos, para transiciones más suaves.">
+            The set builder detects bass energy (sub-bass and bass) and avoids placing two vocal tracks back-to-back, for smoother transitions.
+          </p>
+        </div>
+
+        <div class="feature-card">
           <span class="feature-icon">🌍</span>
           <h3 data-en="Bilingual Interface" data-es="Interfaz Bilingüe">Bilingual Interface</h3>
           <p data-en="Full English and Spanish support throughout the app. Switch in one click — no restart needed."
@@ -927,7 +944,7 @@
     <div class="container">
 
       <div class="section-header">
-        <span class="section-label mono">v0.1.0</span>
+        <span class="section-label mono">v0.2.1</span>
         <h2 class="section-title"
             data-en="Free. Always."
             data-es="Gratis. Siempre.">
@@ -991,6 +1008,88 @@
         </div>
 
       </div><!-- /download-cards -->
+
+      <!-- Installation notes -->
+      <div style="margin-top:48px;display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:860px;margin-left:auto;margin-right:auto;">
+
+        <!-- macOS -->
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+            <span style="font-size:1.4rem;">🍎</span>
+            <h3 style="font-size:1rem;font-weight:700;margin:0;"
+                data-en="Installing on macOS" data-es="Instalar en macOS">Installing on macOS</h3>
+          </div>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px;line-height:1.6;"
+             data-en="CueDrive is not yet signed by Apple (certificate pending). macOS Gatekeeper will warn you the first time. This is normal for indie open-source apps."
+             data-es="CueDrive aún no está firmada por Apple (certificado en proceso). Gatekeeper te avisará la primera vez. Es normal en apps indie de código abierto.">
+            CueDrive is not yet signed by Apple (certificate pending). macOS Gatekeeper will warn you the first time. This is normal for indie open-source apps.
+          </p>
+          <ol style="font-size:.85rem;color:var(--muted);line-height:2;padding-left:20px;margin:0;">
+            <li data-en="Download and open the <strong>.dmg</strong> file"
+                data-es="Descargá y abrí el archivo <strong>.dmg</strong>">
+              Download and open the <strong>.dmg</strong> file</li>
+            <li data-en="Drag <strong>CueDrive</strong> to your Applications folder"
+                data-es="Arrastrá <strong>CueDrive</strong> a tu carpeta Aplicaciones">
+              Drag <strong>CueDrive</strong> to your Applications folder</li>
+            <li data-en='<strong>Right-click</strong> the app → <strong>"Open"</strong> (do NOT double-click)'
+                data-es='<strong>Clic derecho</strong> en la app → <strong>"Abrir"</strong> (NO doble clic)'>
+              <strong>Right-click</strong> the app → <strong>"Open"</strong> (do NOT double-click)</li>
+            <li data-en='Click <strong>"Open"</strong> in the Gatekeeper dialog'
+                data-es='Hacé clic en <strong>"Abrir"</strong> en el diálogo de Gatekeeper'>
+              Click <strong>"Open"</strong> in the Gatekeeper dialog</li>
+            <li data-en="Done — from now on it opens normally"
+                data-es="Listo — de ahora en más abre normal">
+              Done — from now on it opens normally</li>
+          </ol>
+        </div>
+
+        <!-- Windows -->
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+            <span style="font-size:1.4rem;">🪟</span>
+            <h3 style="font-size:1rem;font-weight:700;margin:0;"
+                data-en="Installing on Windows" data-es="Instalar en Windows">Installing on Windows</h3>
+          </div>
+          <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px;line-height:1.6;"
+             data-en="CueDrive is not yet signed with a paid Windows certificate. SmartScreen may warn you. This is normal — the app is 100% open source and safe."
+             data-es="CueDrive aún no tiene firma de pago para Windows. SmartScreen puede avisarte. Es normal — la app es 100% open source y segura.">
+            CueDrive is not yet signed with a paid Windows certificate. SmartScreen may warn you. This is normal — the app is 100% open source and safe.
+          </p>
+          <ol style="font-size:.85rem;color:var(--muted);line-height:2;padding-left:20px;margin:0;">
+            <li data-en="Download the <strong>.exe</strong> installer"
+                data-es="Descargá el instalador <strong>.exe</strong>">
+              Download the <strong>.exe</strong> installer</li>
+            <li data-en="If SmartScreen appears, click <strong>«More info»</strong>"
+                data-es='Si aparece SmartScreen, hacé clic en <strong>"Más información"</strong>'>
+              If SmartScreen appears, click <strong>«More info»</strong></li>
+            <li data-en='Click <strong>«Run anyway»</strong>'
+                data-es='Hacé clic en <strong>"Ejecutar de todos modos"</strong>'>
+              Click <strong>«Run anyway»</strong></li>
+            <li data-en="Follow the installer — CueDrive installs in seconds"
+                data-es="Seguí el instalador — CueDrive se instala en segundos">
+              Follow the installer — CueDrive installs in seconds</li>
+            <li data-en="Open CueDrive from Start or your Desktop"
+                data-es="Abrí CueDrive desde el Inicio o el Escritorio">
+              Open CueDrive from Start or your Desktop</li>
+          </ol>
+        </div>
+
+      </div>
+
+      <!-- Open source trust note -->
+      <p style="text-align:center;margin-top:24px;font-size:.82rem;color:var(--muted);">
+        <span data-en="These warnings appear because CueDrive is a new independent app without paid OS certificates yet."
+              data-es="Estos avisos aparecen porque CueDrive es una app independiente nueva, sin certificados de pago aún.">
+          These warnings appear because CueDrive is a new independent app without paid OS certificates yet.
+        </span>
+        &nbsp;·&nbsp;
+        <a href="https://github.com/rodrantho/cue-drive" target="_blank" rel="noopener"
+           style="color:var(--accent);"
+           data-en="Verify the source code →" data-es="Verificar el código fuente →">
+          Verify the source code →
+        </a>
+      </p>
+
     </div>
   </section>
 
