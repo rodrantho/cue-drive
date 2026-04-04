@@ -122,6 +122,7 @@ export function CollectionsSidebar({
             <button
               key={folder.id}
               onClick={() => onSelectFolder(folder.id)}
+              onContextMenu={(e) => e.preventDefault()}
               className={cn(
                 "flex items-center gap-2 px-3 py-2 text-sm transition-colors text-left w-full",
                 activeFolderId === folder.id

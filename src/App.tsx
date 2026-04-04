@@ -54,6 +54,7 @@ export default function App() {
     deleteCollection,
     renameCollection,
     addTrackToCollection,
+    removeTrackFromCollection,
     getCollectionTracks,
     setCollections,
   } = useCollectionsStore();
@@ -103,15 +104,33 @@ export default function App() {
   function handleTrackContextMenu(e: React.MouseEvent, track: Track) {
     e.preventDefault();
     const manualCollections = collections.filter((c) => c.type === "manual");
-    const items: ContextMenuItem[] = [
-      ...manualCollections.map((col) => ({
+    const items: ContextMenuItem[] = [];
+
+    // Remove from current collection (only for manual collections)
+    if (activeCollectionId) {
+      const activeCol = collections.find((c) => c.id === activeCollectionId);
+      if (activeCol?.type === "manual") {
+        items.push({
+          label: `Eliminar de "${activeCol.name}"`,
+          onClick: () => removeTrackFromCollection(activeCollectionId, track.id),
+          danger: true,
+        });
+      }
+    }
+
+    // Add to other manual collections
+    const addTargets = manualCollections.filter((c) => c.id !== activeCollectionId);
+    items.push(
+      ...addTargets.map((col) => ({
         label: `Agregar a "${col.name}"`,
         onClick: () => addTrackToCollection(col.id, track.id),
-      })),
-      ...(manualCollections.length === 0
-        ? [{ label: "Sin colecciones manuales", onClick: () => {}, disabled: true }]
-        : []),
-    ];
+      }))
+    );
+
+    if (items.length === 0) {
+      items.push({ label: "Sin colecciones manuales", onClick: () => {}, disabled: true });
+    }
+
     setContextMenu({ x: e.clientX, y: e.clientY, items });
   }
 
