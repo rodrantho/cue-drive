@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getVersion } from "@tauri-apps/api/app";
 import { Library, Wand2, Usb, Globe, Heart, FolderPlus } from "lucide-react";
 import { openUrl } from "@tauri-apps/plugin-opener";
 import { open } from "@tauri-apps/plugin-dialog";
@@ -37,6 +38,11 @@ export default function App() {
   const t = useT();
   const { language, setLanguage } = useLangStore();
   const [tab, setTab] = useState<Tab>("library");
+  const [appVersion, setAppVersion] = useState<string>("");
+
+  useEffect(() => {
+    getVersion().then(setAppVersion).catch(() => {});
+  }, []);
   const { selectedTrackId, autoPlayId, tracks, folders, selectTrack, importFolder, setTracks, setFolders } = useLibraryStore();
   const {
     collections,
@@ -200,11 +206,16 @@ export default function App() {
             ))}
           </div>
 
-          {/* Signature */}
+          {/* Version + Signature */}
           <div
-            title="@rodrantho"
-            className="w-10 h-8 flex items-center justify-center"
+            title={`CueDrive v${appVersion} · @rodrantho`}
+            className="w-10 flex flex-col items-center gap-0.5"
           >
+            {appVersion && (
+              <span className="text-[8px] font-mono text-[var(--color-text-muted)] opacity-50 leading-none">
+                v{appVersion}
+              </span>
+            )}
             <span className="text-[9px] font-mono text-[var(--color-text-muted)] opacity-40 leading-none text-center">
               @rod<br/>rantho
             </span>
