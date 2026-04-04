@@ -59,12 +59,6 @@ export function CollectionsSidebar({
     return Object.values(tracks).filter((t) => t.folder_id === folderId).length;
   }
 
-  function getCollectionCount(collection: Collection) {
-    if (collection.type === "manual") return collection.trackIds.length;
-    // For smart we show total tracks (approximate)
-    return Object.keys(tracks).length;
-  }
-
   function handleCollectionContextMenu(e: React.MouseEvent, collectionId: string) {
     e.preventDefault();
     setContextMenu({ collectionId, x: e.clientX, y: e.clientY });
