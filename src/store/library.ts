@@ -1,10 +1,11 @@
 import { create } from "zustand";
 import { invoke } from "@tauri-apps/api/core";
-import type { Track, LibraryFilters, EnergyLevel, MoodTag, VocalType } from "../types";
+import type { Track, LibraryFilters, EnergyLevel, MoodTag, VocalType, FolderSource } from "../types";
+import { scheduleSave } from "./persistence";
 
 interface LibraryState {
   tracks: Record<string, Track>;
-  folders: string[];
+  folders: FolderSource[];
   filters: LibraryFilters;
   selectedTrackId: string | null;
   autoPlayId: string | null;
@@ -22,6 +23,10 @@ interface LibraryState {
   setKeyNotation: (notation: "camelot" | "standard") => void;
   updateTrack: (id: string, updates: Partial<Track>) => void;
   getFilteredTracks: () => Track[];
+
+  // Persistence hydration
+  setTracks: (tracks: Record<string, Track>) => void;
+  setFolders: (folders: FolderSource[]) => void;
 }
 
 const DEFAULT_FILTERS: LibraryFilters = {
@@ -47,16 +52,37 @@ export const useLibraryStore = create<LibraryState>((set, get) => ({
     set({ isImporting: true });
     try {
       const tracks: Track[] = await invoke("import_folder", { path });
+
+      // Create FolderSource
+      const folderName = path.split("/").filter(Boolean).pop() ?? path;
+      const folderId = crypto.randomUUID();
+      const folderSource: FolderSource = {
+        id: folderId,
+        path,
+        name: folderName,
+        addedAt: Date.now(),
+      };
+
       const trackMap: Record<string, Track> = {};
       for (const t of tracks) {
-        trackMap[t.id] = t;
+        trackMap[t.id] = { ...t, folder_id: folderId };
       }
-      set((state) => ({
-        tracks: { ...state.tracks, ...trackMap },
-        folders: state.folders.includes(path)
-          ? state.folders
-          : [...state.folders, path],
-      }));
+
+      set((state) => {
+        const alreadyExists = state.folders.some((f) => f.path === path);
+        const newFolders = alreadyExists ? state.folders : [...state.folders, folderSource];
+        const newTracks = { ...state.tracks, ...trackMap };
+        return { tracks: newTracks, folders: newFolders };
+      });
+
+      // Persist after import
+      const state = get();
+      scheduleSave({
+        version: 1,
+        tracks: state.tracks,
+        folders: state.folders,
+        collections: [],
+      });
     } finally {
       set({ isImporting: false });
     }
@@ -73,9 +99,20 @@ export const useLibraryStore = create<LibraryState>((set, get) => ({
     }));
     try {
       const result: Track = await invoke("analyze_track", { trackId, path: track.path });
+      // Preserve folder_id from the original track
+      const updatedTrack = { ...result, folder_id: track.folder_id };
       set((state) => ({
-        tracks: { ...state.tracks, [trackId]: result },
+        tracks: { ...state.tracks, [trackId]: updatedTrack },
       }));
+
+      // Persist after successful analysis
+      const state = get();
+      scheduleSave({
+        version: 1,
+        tracks: state.tracks,
+        folders: state.folders,
+        collections: [],
+      });
     } catch (err) {
       set((state) => ({
         tracks: {
@@ -93,7 +130,7 @@ export const useLibraryStore = create<LibraryState>((set, get) => ({
   analyzeAll: async () => {
     const { tracks, analyzeTrack } = get();
     const unanalyzed = Object.values(tracks).filter((t) => !t.analyzed && !t.analyzing);
-    const CONCURRENCY = 3; // analyze 3 tracks at a time
+    const CONCURRENCY = 3;
     for (let i = 0; i < unanalyzed.length; i += CONCURRENCY) {
       const batch = unanalyzed.slice(i, i + CONCURRENCY);
       await Promise.all(batch.map((t) => analyzeTrack(t.id)));
@@ -110,10 +147,20 @@ export const useLibraryStore = create<LibraryState>((set, get) => ({
 
   setKeyNotation: (notation) => set({ keyNotation: notation }),
 
-  updateTrack: (id, updates) =>
+  updateTrack: (id, updates) => {
     set((state) => ({
       tracks: { ...state.tracks, [id]: { ...state.tracks[id], ...updates } },
-    })),
+    }));
+
+    // Persist after update
+    const state = get();
+    scheduleSave({
+      version: 1,
+      tracks: state.tracks,
+      folders: state.folders,
+      collections: [],
+    });
+  },
 
   getFilteredTracks: () => {
     const { tracks, filters } = get();
@@ -162,4 +209,7 @@ export const useLibraryStore = create<LibraryState>((set, get) => ({
 
     return result;
   },
+
+  setTracks: (tracks) => set({ tracks }),
+  setFolders: (folders) => set({ folders }),
 }));

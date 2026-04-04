@@ -373,6 +373,18 @@ def compute_mood_tags(energy: int, bpm: float, key_camelot: str, vocal: str) -> 
 
 # ─── Main ─────────────────────────────────────────────────────────────────────
 
+def compute_bass_energy(y: np.ndarray, sr: int) -> tuple[float, float]:
+    """Compute sub-bass (20-80 Hz) and bass (80-250 Hz) energy ratios."""
+    fft = np.abs(np.fft.rfft(y))
+    freqs = np.fft.rfftfreq(len(y), 1 / sr)
+    total_energy = np.sum(fft ** 2) + 1e-10
+    sub_bass_mask = (freqs >= 20) & (freqs <= 80)
+    bass_mask = (freqs >= 80) & (freqs <= 250)
+    sub_bass_energy = min(1.0, float(np.sum(fft[sub_bass_mask] ** 2) / total_energy) * 5)
+    bass_energy = min(1.0, float(np.sum(fft[bass_mask] ** 2) / total_energy) * 5)
+    return sub_bass_energy, bass_energy
+
+
 def compute_waveform_peaks(y: np.ndarray, n_peaks: int = 500) -> list:
     """Downsampled amplitude envelope for instant waveform display (no re-decode needed)."""
     hop = max(1, len(y) // n_peaks)
@@ -409,6 +421,7 @@ def analyze(path: str) -> dict:
     cue_points = generate_cue_points(structure, y, sr)
     mood_tags = compute_mood_tags(energy, bpm, key_camelot, vocal)
     waveform_peaks = compute_waveform_peaks(y)
+    sub_bass_energy, bass_energy = compute_bass_energy(y, sr)
 
     return {
         "bpm": bpm,
@@ -423,6 +436,8 @@ def analyze(path: str) -> dict:
         "cue_points": cue_points,
         "duration": round(duration, 3),
         "waveform_peaks": waveform_peaks,
+        "sub_bass_energy": round(sub_bass_energy, 4),
+        "bass_energy": round(bass_energy, 4),
         "error": None,
     }
 

@@ -87,6 +87,21 @@ export const translations = {
     exp_source_set: (n: number, name: string) => `Exporting ${n} tracks from set "${name}"`,
     exp_source_all: (n: number) => `Exporting ${n} tracks (all analyzed)`,
 
+    // Collections
+    collections_all_tracks: "Toda la librería",
+    collections_folders: "CARPETAS",
+    collections_collections: "COLECCIONES",
+    collection_new: "New collection",
+    collection_rename: "Rename",
+    collection_delete: "Delete",
+    collection_add_to: "Add to collection",
+    collection_no_manual: "No manual collections",
+
+    // Set Builder extras
+    set_source: "Set source",
+    set_avoid_vocals: "Avoid consecutive vocals",
+    set_source_all: "All library",
+
     // Updater
     update_available: "New version available",
     update_install: "Update",
@@ -178,6 +193,21 @@ export const translations = {
     exp_export_btn: (n: number) => `Exportar ${n} tracks`,
     exp_source_set: (n: number, name: string) => `Exportando ${n} tracks del set "${name}"`,
     exp_source_all: (n: number) => `Exportando ${n} tracks (todos los analizados)`,
+
+    // Colecciones
+    collections_all_tracks: "Toda la librería",
+    collections_folders: "CARPETAS",
+    collections_collections: "COLECCIONES",
+    collection_new: "Nueva colección",
+    collection_rename: "Renombrar",
+    collection_delete: "Eliminar",
+    collection_add_to: "Agregar a colección",
+    collection_no_manual: "Sin colecciones manuales",
+
+    // Armar set extras
+    set_source: "Fuente del set",
+    set_avoid_vocals: "Evitar vocales consecutivas",
+    set_source_all: "Toda la librería",
 
     // Updater
     update_available: "Nueva versión disponible",

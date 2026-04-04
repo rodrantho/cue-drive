@@ -11,6 +11,7 @@ interface Props {
   onSelect: () => void;
   onAnalyze: () => void;
   onPlay: () => void;
+  onContextMenu?: (e: React.MouseEvent, track: Track) => void;
 }
 
 function formatDuration(secs: number): string {
@@ -19,12 +20,15 @@ function formatDuration(secs: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
-export function TrackRow({ track, isSelected, onSelect, onAnalyze, onPlay }: Props) {
+export function TrackRow({ track, isSelected, onSelect, onAnalyze, onPlay, onContextMenu }: Props) {
   const t = useT();
   return (
     <div
+      draggable={true}
+      onDragStart={(e) => e.dataTransfer.setData("trackId", track.id)}
       onClick={onSelect}
       onDoubleClick={onPlay}
+      onContextMenu={onContextMenu ? (e) => onContextMenu(e, track) : undefined}
       className={cn(
         "grid items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors border-b border-[var(--color-border)]",
         "hover:bg-[var(--color-surface-2)]",

@@ -61,6 +61,8 @@ pub async fn analyze_track(
         structure: result.structure,
         cue_points: result.cue_points,
         waveform_peaks: result.waveform_peaks,
+        sub_bass_energy: result.sub_bass_energy,
+        bass_energy: result.bass_energy,
         analyzed: true,
         analyzing: false,
         analysis_error: None,

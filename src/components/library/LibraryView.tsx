@@ -5,9 +5,14 @@ import { useLibraryStore } from "../../store/library";
 import { TrackRow } from "./TrackRow";
 import { cn } from "../../utils/cn";
 import { useT } from "../../i18n/useT";
-import type { EnergyLevel } from "../../types";
+import type { EnergyLevel, Track } from "../../types";
 
-export function LibraryView() {
+interface LibraryViewProps {
+  scopeTracks?: Track[];
+  onTrackContextMenu?: (e: React.MouseEvent, track: Track) => void;
+}
+
+export function LibraryView({ scopeTracks, onTrackContextMenu }: LibraryViewProps) {
   const t = useT();
   const {
     importFolder,
@@ -26,9 +31,41 @@ export function LibraryView() {
   } = useLibraryStore();
 
   const [showFilters, setShowFilters] = useState(false);
-  const filteredTracks = getFilteredTracks();
-  const totalTracks = Object.keys(tracks).length;
-  const analyzedCount = Object.values(tracks).filter((t) => t.analyzed).length;
+
+  // If scopeTracks are provided, filter within that pool; otherwise use all
+  const baseTracks = scopeTracks ?? Object.values(tracks);
+
+  function getScopedFilteredTracks() {
+    if (!scopeTracks) return getFilteredTracks();
+    // Apply same filters as getFilteredTracks but over the scoped pool
+    let result = scopeTracks;
+    if (filters.search) {
+      const q = filters.search.toLowerCase();
+      result = result.filter(
+        (t) =>
+          t.title.toLowerCase().includes(q) ||
+          t.artist.toLowerCase().includes(q) ||
+          t.genre.toLowerCase().includes(q)
+      );
+    }
+    if (filters.energy.length > 0) {
+      result = result.filter((t) => t.energy !== null && filters.energy.includes(t.energy as EnergyLevel));
+    }
+    if (filters.bpm_min !== null) {
+      result = result.filter((t) => t.bpm !== null && t.bpm >= filters.bpm_min!);
+    }
+    if (filters.bpm_max !== null) {
+      result = result.filter((t) => t.bpm !== null && t.bpm <= filters.bpm_max!);
+    }
+    if (filters.key) {
+      result = result.filter((t) => t.key_camelot === filters.key || t.key_standard === filters.key);
+    }
+    return result;
+  }
+
+  const filteredTracks = getScopedFilteredTracks();
+  const totalTracks = baseTracks.length;
+  const analyzedCount = baseTracks.filter((t) => t.analyzed).length;
   const hasUnanalyzed = analyzedCount < totalTracks && totalTracks > 0;
 
   async function handleImport() {
@@ -191,6 +228,7 @@ export function LibraryView() {
               onSelect={() => selectTrack(track.id)}
               onAnalyze={() => analyzeTrack(track.id)}
               onPlay={() => playTrack(track.id)}
+              onContextMenu={onTrackContextMenu}
             />
           ))
         )}

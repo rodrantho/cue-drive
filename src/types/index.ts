@@ -60,6 +60,10 @@ export interface Track {
   vocal: VocalType | null;
   mood_tags: MoodTag[];
 
+  // Bass analysis
+  sub_bass_energy: number | null;
+  bass_energy: number | null;
+
   // Structure
   structure: TrackStructure | null;
   cue_points: CuePoint[];
@@ -75,6 +79,9 @@ export interface Track {
 
   // Pre-computed waveform peaks for instant display (500 float values 0-1)
   waveform_peaks: number[] | null;
+
+  // Library organization
+  folder_id: string | null;
 }
 
 // ─── Set Types ────────────────────────────────────────────────────────────────
@@ -111,11 +118,43 @@ export interface ExportOptions {
   copy_files: boolean;
 }
 
+// ─── Folder & Collection Types ────────────────────────────────────────────────
+
+export interface FolderSource {
+  id: string;
+  path: string;
+  name: string; // last path segment
+  addedAt: number;
+}
+
+export type CollectionColor = "purple" | "blue" | "green" | "orange" | "red" | "pink";
+
+export interface SmartFilters {
+  bpmMin?: number;
+  bpmMax?: number;
+  energyMin?: number;
+  energyMax?: number;
+  keys?: string[];
+  hasVocals?: boolean;
+  genres?: string[];
+  folderIds?: string[];
+}
+
+export interface Collection {
+  id: string;
+  name: string;
+  type: "manual" | "smart";
+  trackIds: string[];
+  smartFilters?: SmartFilters;
+  color: CollectionColor;
+  createdAt: number;
+}
+
 // ─── Library Types ─────────────────────────────────────────────────────────────
 
 export interface Library {
   tracks: Record<string, Track>;
-  folders: string[];
+  folders: FolderSource[];
   last_updated: string | null;
 }
 

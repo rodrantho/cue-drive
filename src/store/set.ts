@@ -23,6 +23,7 @@ export interface BuildSetParams {
   available_tracks: Track[];
   use_all_tracks?: boolean;
   pinned_track_ids?: string[]; // tracks forced into the set
+  avoidConsecutiveVocals?: boolean;
 }
 
 // Energy arc templates — values per relative position (0% to 100% of set)
@@ -41,7 +42,8 @@ const OVERLAP_MIN = 1.5;
 function pickNextTrack(
   candidates: Track[],
   lastTrack: Track | null,
-  targetEnergy: number
+  targetEnergy: number,
+  avoidConsecutiveVocals?: boolean
 ): Track | null {
   if (candidates.length === 0) return null;
 
@@ -68,6 +70,15 @@ function pickNextTrack(
     if (bpmMatch.length > 0) pool = bpmMatch;
   }
 
+  // Avoid consecutive vocal tracks
+  if (avoidConsecutiveVocals && lastTrack) {
+    const prevHasVocals = lastTrack.vocal !== null && lastTrack.vocal !== "none";
+    if (prevHasVocals) {
+      const nonVocal = pool.filter((t) => t.vocal === "none" || t.vocal === null);
+      if (nonVocal.length > 0) pool = nonVocal;
+    }
+  }
+
   // No same artist twice in a row
   if (lastTrack?.artist) {
     const diffArtist = pool.filter((t) => t.artist !== lastTrack!.artist);
@@ -87,7 +98,7 @@ function pickNextTrack(
 interface BuildResult { tracks: SetTrack[]; achievedMinutes: number; }
 
 function buildSmartSet(params: BuildSetParams): BuildResult {
-  const { template, duration_minutes, available_tracks, use_all_tracks, pinned_track_ids } = params;
+  const { template, duration_minutes, available_tracks, use_all_tracks, pinned_track_ids, avoidConsecutiveVocals } = params;
   const arc = ENERGY_ARCS[template];
 
   const analyzed = available_tracks.filter((t) => t.analyzed && t.bpm !== null);
@@ -138,7 +149,7 @@ function buildSmartSet(params: BuildSetParams): BuildResult {
     const targetEnergy = arc[arcIndex];
 
     const candidates = analyzed.filter((t) => !used.has(t.id));
-    const chosen = pickNextTrack(candidates, lastTrack, targetEnergy);
+    const chosen = pickNextTrack(candidates, lastTrack, targetEnergy, avoidConsecutiveVocals);
     if (!chosen) break;
 
     const trackMin = (chosen.duration ?? 360) / 60;

@@ -96,6 +96,9 @@ pub fn read_metadata(path: &str) -> Track {
         custom_energy: None,
         custom_tags: vec![],
         waveform_peaks: None,
+        sub_bass_energy: None,
+        bass_energy: None,
+        folder_id: None,
     }
 }
 

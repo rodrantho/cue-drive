@@ -2,11 +2,12 @@ import { useState, useMemo } from "react";
 import { Wand2, GripVertical, X, Plus, Pin, ListMusic, AlertTriangle } from "lucide-react";
 import { useSetStore } from "../../store/set";
 import { useLibraryStore } from "../../store/library";
+import { useCollectionsStore } from "../../store/collections";
 import { EnergyBadge } from "../shared/EnergyBadge";
 import { KeyBadge } from "../shared/KeyBadge";
 import { cn } from "../../utils/cn";
 import { useT } from "../../i18n/useT";
-import type { SetTemplate, EnergyLevel } from "../../types";
+import type { SetTemplate, EnergyLevel, Track } from "../../types";
 
 // ─── Energy arc bar chart ──────────────────────────────────────────────────────
 
@@ -164,6 +165,7 @@ export function SetBuilderView() {
   const t = useT();
   const { currentSet, buildSet, addTrack, removeTrack, reorderTracks, clearSet, buildWarning } = useSetStore();
   const { tracks: allTracks } = useLibraryStore();
+  const { collections, getCollectionTracks } = useCollectionsStore();
 
   const [template, setTemplate] = useState<SetTemplate>("peak");
   const [duration, setDuration] = useState(60);
@@ -171,6 +173,8 @@ export function SetBuilderView() {
   const [pinnedIds, setPinnedIds] = useState<Set<string>>(new Set());
   const [showPicker, setShowPicker] = useState(false);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [sourceId, setSourceId] = useState<string>("all"); // "all" or collectionId
+  const [avoidConsecutiveVocals, setAvoidConsecutiveVocals] = useState(false);
 
   const TEMPLATES: { value: SetTemplate; label: string; desc: string }[] = [
     { value: "warmup",    label: t.set_template_warmup,    desc: t.set_template_warmup_desc },
@@ -179,16 +183,23 @@ export function SetBuilderView() {
     { value: "fullnight", label: t.set_template_fullnight, desc: t.set_template_fullnight_desc },
   ];
 
+  // Resolve source tracks based on selected source
+  const sourceTracks: Track[] = useMemo(() => {
+    if (sourceId === "all") return Object.values(allTracks);
+    return getCollectionTracks(sourceId, allTracks);
+  }, [sourceId, allTracks, collections]);
+
   function handleBuild() {
     buildSet(
       {
         template,
         duration_minutes: duration,
-        available_tracks: Object.values(allTracks),
+        available_tracks: sourceTracks,
         use_all_tracks: useAllTracks,
         pinned_track_ids: Array.from(pinnedIds),
+        avoidConsecutiveVocals,
       },
-      Object.values(allTracks)
+      sourceTracks
     );
   }
 
@@ -220,6 +231,33 @@ export function SetBuilderView() {
     <div className="flex flex-col h-full">
       {/* ── Config panel ──────────────────────────────────────────────────── */}
       <div className="px-4 py-3 border-b border-[var(--color-border)] space-y-3 shrink-0">
+        {/* Source + avoid vocals row */}
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-[var(--color-text-muted)] shrink-0">Fuente del set</span>
+            <select
+              value={sourceId}
+              onChange={(e) => setSourceId(e.target.value)}
+              className="text-sm px-2 py-1 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-2)] text-[var(--color-text)] focus:outline-none focus:border-[var(--color-accent)]"
+            >
+              <option value="all">Toda la librería</option>
+              {collections.map((col) => (
+                <option key={col.id} value={col.id}>{col.name}</option>
+              ))}
+            </select>
+          </div>
+
+          <label className="flex items-center gap-1.5 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={avoidConsecutiveVocals}
+              onChange={(e) => setAvoidConsecutiveVocals(e.target.checked)}
+              className="accent-[var(--color-accent)]"
+            />
+            <span className="text-xs text-[var(--color-text-muted)]">Evitar vocales consecutivas</span>
+          </label>
+        </div>
+
         {/* Template selector */}
         <div className="grid grid-cols-4 gap-2">
           {TEMPLATES.map((tmpl) => (
@@ -354,9 +392,30 @@ export function SetBuilderView() {
               <div>
                 {setTracks.map((st, idx) => {
                   const isPinned = pinnedIds.has(st.track_id);
+                  // Bass compatibility with previous track
+                  const prevTrack = idx > 0 ? setTracks[idx - 1].track : null;
+                  const currSubBass = st.track.sub_bass_energy;
+                  const prevSubBass = prevTrack?.sub_bass_energy ?? null;
+                  const showBassCompat = currSubBass !== null && currSubBass !== undefined &&
+                    prevSubBass !== null && prevSubBass !== undefined && idx > 0;
+                  const bassDiff = showBassCompat ? Math.abs(currSubBass! - prevSubBass!) : 0;
+                  const bassCompatColor = bassDiff < 0.15 ? "#4ade80" : bassDiff < 0.3 ? "#facc15" : "#f87171";
+
                   return (
+                    <div key={st.track_id}>
+                      {/* Bass compatibility indicator between tracks */}
+                      {showBassCompat && (
+                        <div className="flex items-center gap-2 px-4 py-0.5">
+                          <div className="flex-1 h-px bg-[var(--color-border)]" />
+                          <div
+                            title={`Sub-bass diff: ${bassDiff.toFixed(2)}`}
+                            style={{ backgroundColor: bassCompatColor }}
+                            className="w-2 h-2 rounded-full shrink-0"
+                          />
+                          <div className="flex-1 h-px bg-[var(--color-border)]" />
+                        </div>
+                      )}
                     <div
-                      key={st.track_id}
                       draggable
                       onDragStart={() => setDragIdx(idx)}
                       onDragOver={(e) => e.preventDefault()}
@@ -411,6 +470,7 @@ export function SetBuilderView() {
                       >
                         <X className="w-3.5 h-3.5" />
                       </button>
+                    </div>
                     </div>
                   );
                 })}

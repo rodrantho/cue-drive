@@ -66,6 +66,13 @@ pub struct Track {
 
     // Waveform display (pre-computed peaks for instant rendering)
     pub waveform_peaks: Option<Vec<f64>>,
+
+    // Bass analysis
+    pub sub_bass_energy: Option<f64>,
+    pub bass_energy: Option<f64>,
+
+    // Library organization
+    pub folder_id: Option<String>,
 }
 
 /// Data returned by the Python analyzer sidecar
@@ -82,5 +89,7 @@ pub struct AnalysisResult {
     pub cue_points: Vec<CuePoint>,
     pub duration: Option<f64>,
     pub waveform_peaks: Option<Vec<f64>>,
+    pub sub_bass_energy: Option<f64>,
+    pub bass_energy: Option<f64>,
     pub error: Option<String>,
 }
