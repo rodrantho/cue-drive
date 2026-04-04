@@ -19,32 +19,42 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Create GitHub Release
+      - name: Create or get GitHub Release
         id: create
         uses: actions/github-script@v7
         with:
           script: |
-            const { data } = await github.rest.repos.createRelease({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag_name: context.ref.replace('refs/tags/', ''),
-              name: `CueDrive ${context.ref.replace('refs/tags/', '')}`,
-              body: `## CueDrive ${context.ref.replace('refs/tags/', '')}
-
-            DJ USB Organizer — analizá, organizá y exportá tu música a USBs.
-
-            ### Descargas / Downloads
-            | Sistema | Archivo |
-            |---|---|
-            | macOS (x64) | \`CueDrive_*_x64.dmg\` |
-            | Windows 10/11 (x64) | \`CueDrive_*_x64-setup.exe\` |
-
-            > **macOS:** si Gatekeeper bloquea → clic derecho → Abrir.
-            > **Windows:** si SmartScreen avisa → "Más información" → Ejecutar de todos modos.`,
-              draft: true,
-              prerelease: false,
-            });
-            return data.id;
+            const tag = context.ref.replace('refs/tags/', '');
+            // Try to get existing release first
+            try {
+              const { data } = await github.rest.repos.getReleaseByTag({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag,
+              });
+              core.info(`Using existing release ${data.id} for tag ${tag}`);
+              // Re-set to draft so build jobs can upload artifacts
+              await github.rest.repos.updateRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                release_id: data.id,
+                draft: true,
+              });
+              return data.id;
+            } catch (e) {
+              // Release doesn't exist, create it
+              const { data } = await github.rest.repos.createRelease({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                tag_name: tag,
+                name: `CueDrive ${tag}`,
+                body: `## CueDrive ${tag}\n\nDJ USB Organizer — analizá, organizá y exportá tu música a USBs.\n\n### Descargas / Downloads\n| Sistema | Archivo |\n|---|---|\n| macOS (x64) | \`CueDrive_*_x64.dmg\` |\n| Windows 10/11 (x64) | \`CueDrive_*_x64-setup.exe\` |\n\n> **macOS:** si Gatekeeper bloquea → clic derecho → Abrir.\n> **Windows:** si SmartScreen avisa → "Más información" → Ejecutar de todos modos.`,
+                draft: true,
+                prerelease: false,
+              });
+              core.info(`Created new release ${data.id} for tag ${tag}`);
+              return data.id;
+            }
 
   # ── Job 2: Build por plataforma ─────────────────────────────────────────────
   build:
