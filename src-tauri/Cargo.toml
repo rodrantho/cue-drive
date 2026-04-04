@@ -1,6 +1,6 @@
 [package]
 name = "cue-drive"
-version = "0.2.2"
+version = "0.2.3"
 description = "CueDrive — DJ USB Organizer"
 authors = ["rodrantho <@rodrantho>"]
 edition = "2021"
