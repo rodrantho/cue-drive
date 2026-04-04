@@ -209,9 +209,12 @@ export default function App() {
           {/* Signature */}
           <div
             title="@rodrantho"
-            className="w-10 h-6 flex items-center justify-center"
+            className="w-10 h-16 flex items-center justify-center overflow-hidden"
           >
-            <span className="text-[9px] font-mono text-[var(--color-text-muted)] opacity-40 leading-none">
+            <span
+              className="text-[9px] font-mono text-[var(--color-text-muted)] opacity-40 leading-none whitespace-nowrap"
+              style={{ transform: "rotate(-90deg)" }}
+            >
               @rodrantho
             </span>
           </div>
