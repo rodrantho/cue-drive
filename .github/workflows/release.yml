@@ -137,13 +137,18 @@ jobs:
     steps:
       - name: Publish release
         uses: actions/github-script@v7
-        env:
-          RELEASE_ID: ${{ needs.create-release.outputs.release_id }}
         with:
           script: |
+            const tag = context.ref.replace('refs/tags/', '');
+            const { data: release } = await github.rest.repos.getReleaseByTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag,
+            });
             await github.rest.repos.updateRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              release_id: parseInt(process.env.RELEASE_ID),
+              release_id: release.id,
               draft: false,
             });
+            core.info(`Published release ${release.id} for tag ${tag}`);
