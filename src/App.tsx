@@ -206,18 +206,13 @@ export default function App() {
             ))}
           </div>
 
-          {/* Version + Signature */}
+          {/* Signature */}
           <div
-            title={`CueDrive v${appVersion} · @rodrantho`}
-            className="w-10 flex flex-col items-center gap-0.5"
+            title="@rodrantho"
+            className="w-10 h-6 flex items-center justify-center"
           >
-            {appVersion && (
-              <span className="text-[8px] font-mono text-[var(--color-text-muted)] opacity-50 leading-none">
-                v{appVersion}
-              </span>
-            )}
-            <span className="text-[9px] font-mono text-[var(--color-text-muted)] opacity-40 leading-none text-center">
-              @rod<br/>rantho
+            <span className="text-[9px] font-mono text-[var(--color-text-muted)] opacity-40 leading-none">
+              @rodrantho
             </span>
           </div>
         </div>
@@ -249,7 +244,14 @@ export default function App() {
             {TABS.find((tb) => tb.value === tab)?.label}
           </h1>
           <div className="flex-1" />
-          <span className="text-xs text-[var(--color-text-muted)] font-mono">CueDrive</span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-[var(--color-text-muted)] font-mono">CueDrive</span>
+            {appVersion && (
+              <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[var(--color-surface-2)] text-[var(--color-text-muted)]">
+                v{appVersion}
+              </span>
+            )}
+          </div>
         </div>
 
         {/* Update banner */}
